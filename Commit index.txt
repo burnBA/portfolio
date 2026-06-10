@@ -1,0 +1,5 @@
+feat: structure HTML5 sémantique du portfolio
+
+- Header avec nav, toggle thème et burger mobile
+- Sections hero, about, projets, compétences, contact
+- Hooks JS (filtres, expand, dark mode) et attributs ARIA
