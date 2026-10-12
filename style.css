@@ -548,3 +548,1751 @@ main:focus {
 .site-footer__inner p {
   flex: 1 1 18rem;
 }
+
+/* Tout élément [hidden] reste masqué, même si une classe définit display */
+[hidden] {
+  display: none !important;
+}
+
+
+/* ==========================================================================
+   7. COMPOSANT : FENÊTRE
+   Structure : .window > .window__titlebar + .window__body
+   États (gérés par script.js) :
+     .is-active    fenêtre au centre de l'écran (barre de titre violette)
+     .is-minimized contenu replié (bouton _ )
+     .is-maximized pleine largeur (bouton □ )
+     [hidden]      fermée, restaurable depuis la barre des tâches (bouton × )
+   ========================================================================== */
+.window {
+  position: relative;
+  padding: 3px;
+  background: var(--c-surface-alt);
+  border-radius: var(--r-os);
+  box-shadow: var(--bevel-out), var(--shadow-window);
+  scroll-margin-top: var(--space-4);
+}
+
+.window__titlebar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--titlebar-h);
+  padding: 2px 3px 2px var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  line-height: 1;
+  color: var(--c-title-text);
+  background: var(--c-title-active);
+  user-select: none;
+  transition: filter var(--dur-base) var(--ease);
+}
+
+/* Avec JS : seules les fenêtres « actives » gardent la barre violette */
+.js .window:not(.is-active) > .window__titlebar,
+.js .window:not(.is-active) > form > .window__titlebar {
+  background: var(--c-title-inactive);
+}
+
+.window__file {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.window__controls {
+  display: flex;
+  gap: 2px;
+}
+
+/* Boutons _ □ × : petits carrés biseautés avec glyphes pixel 8x8 */
+.window__btn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 26px;
+  padding: 0;
+  color: var(--c-ink);
+  background: var(--c-surface-alt);
+  border: 0;
+  border-radius: var(--r-os);
+  box-shadow: var(--bevel-out);
+}
+
+.window__btn svg {
+  width: 8px;
+  height: 8px;
+  shape-rendering: crispEdges;
+}
+
+.window__btn[data-action="close"] {
+  margin-left: 2px;
+}
+
+.window__btn:hover {
+  background: var(--c-surface);
+}
+
+.window__btn[data-action="close"]:hover {
+  color: var(--ink-900);
+  background: var(--c-acid);
+}
+
+.window__btn:active {
+  box-shadow: var(--bevel-in);
+}
+
+.window__btn:active svg {
+  transform: translate(1px, 1px);
+}
+
+/* Sur la barre violette, le focus passe en vert acide pour rester visible */
+.window__btn:focus-visible {
+  outline-color: var(--c-acid);
+  outline-offset: 1px;
+}
+
+/* Zone de contenu « creusée » */
+.window__body {
+  margin-top: 3px;
+  padding: var(--space-6);
+  background: var(--c-surface);
+  box-shadow: var(--bevel-in);
+}
+
+.window.is-minimized > .window__body {
+  display: none;
+}
+
+/* Agrandie : la fenêtre s'étend sur toute la largeur de l'écran (moins les marges) */
+.stack > .window.is-maximized {
+  margin-left: calc(50% - 50vw + var(--gutter));
+  margin-right: calc(50% - 50vw + var(--gutter));
+  width: auto;
+}
+
+/* Titres de section (dans le corps des fenêtres) */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+}
+
+/* Étincelle à 4 branches devant chaque titre */
+.section-title::before {
+  content: "";
+  flex: none;
+  width: 0.7em;
+  height: 0.7em;
+  background: var(--c-accent);
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+}
+
+.section-intro {
+  max-width: 60ch;
+  margin-bottom: var(--space-5);
+  color: var(--c-ink-muted);
+}
+
+.subhead {
+  margin: var(--space-7) 0 var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+}
+
+/* Listes à puces carrées « pixel » */
+.bullets {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.bullets li {
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  background: var(--c-accent);
+  box-shadow: 1px 1px 0 var(--c-bevel-dark);
+}
+
+
+/* ==========================================================================
+   8. COMPOSANTS : BOUTONS, TAGS, CHIPS
+   ========================================================================== */
+.btn,
+.program__props > summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 42px;
+  padding: 0 var(--space-4) 2px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  line-height: 1;
+  color: var(--c-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  background: var(--c-surface-alt);
+  border: 0;
+  border-radius: var(--r-os);
+  box-shadow: var(--bevel-out);
+  cursor: pointer;
+  transition:
+    box-shadow var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
+}
+
+.btn:hover,
+.program__props > summary:hover {
+  box-shadow: var(--bevel-out), var(--glow);
+}
+
+/* Enfoncé (clic) ou bouton à bascule actif */
+.btn:active,
+.program__props > summary:active {
+  box-shadow: var(--bevel-in);
+  transform: translate(1px, 1px);
+}
+
+/* Bouton principal : violet électrique, biseau dans les tons violets */
+.btn--primary {
+  color: var(--c-on-accent);
+  background: var(--vio-600);
+  box-shadow:
+    inset -1px -1px 0 var(--ink-900),
+    inset 1px 1px 0 var(--lav-300),
+    inset -2px -2px 0 var(--vio-800),
+    inset 2px 2px 0 var(--vio-400);
+}
+
+.btn--primary:hover {
+  box-shadow:
+    inset -1px -1px 0 var(--ink-900),
+    inset 1px 1px 0 var(--lav-300),
+    inset -2px -2px 0 var(--vio-800),
+    inset 2px 2px 0 var(--vio-400),
+    var(--glow);
+}
+
+.btn--primary:active {
+  box-shadow:
+    inset 1px 1px 0 var(--ink-900),
+    inset 2px 2px 0 var(--vio-800);
+}
+
+.btn--primary .icon {
+  --ico-w: #FFFFFF;
+}
+
+.btn--small,
+.program__props > summary {
+  min-height: 34px;
+  padding: 0 var(--space-3) 2px;
+  font-size: var(--fs-ui-sm);
+}
+
+/* Onglets de filtre : l'onglet actif est « enfoncé » */
+.btn--tab[aria-pressed="true"] {
+  color: var(--c-accent-strong);
+  background: var(--c-surface);
+  box-shadow: var(--bevel-in);
+}
+
+/* Tags de statut (pilules) : texte + forme, jamais la couleur seule */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  padding: 0 10px 1px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-sm);
+  line-height: 1;
+  border: 1px solid currentColor;
+  border-radius: var(--r-pill);
+}
+
+.tag--done {
+  color: var(--c-success);
+  background: var(--c-success-soft);
+}
+
+.tag__dot {
+  width: 9px;
+  height: 9px;
+  background: var(--c-acid);
+  border: 2px solid var(--ink-900);
+  border-radius: var(--r-pill);
+}
+
+.tag--wip {
+  color: var(--c-accent-strong);
+  background: var(--c-accent-soft);
+}
+
+/* Mini barre de progression rétro animée (segments qui défilent) */
+.tag__bar {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.tag__bar i {
+  width: 5px;
+  height: 10px;
+  background: currentColor;
+  opacity: 0.25;
+  animation: segment 1.2s steps(1) infinite;
+}
+
+.tag__bar i:nth-child(2) { animation-delay: 0.4s; }
+.tag__bar i:nth-child(3) { animation-delay: 0.8s; }
+
+@keyframes segment {
+  0%, 33% { opacity: 1; }
+  34%, 100% { opacity: 0.25; }
+}
+
+/* Chips : technologies et compétences */
+.chips,
+.stack-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chips li,
+.stack-list li {
+  padding: 4px 10px 5px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-sm);
+  line-height: 1;
+  color: var(--c-ink);
+  background: var(--c-surface);
+  box-shadow: var(--bevel-thin);
+}
+
+
+/* ==========================================================================
+   9. SECTIONS
+   ========================================================================== */
+
+/* ---------- Icônes de bureau ---------- */
+.desktop-icons ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: var(--icons-col);
+  padding: var(--space-2) 4px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-sm);
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+  color: var(--c-ink);
+}
+
+.desktop-icon .icon {
+  transition: transform var(--dur-base) var(--ease), filter var(--dur-base) var(--ease);
+}
+
+.desktop-icon span {
+  padding: 1px 5px 2px;
+}
+
+/* Survol / focus : libellé « sélectionné » comme sur un vrai bureau */
+.desktop-icon:hover span,
+.desktop-icon:focus-visible span {
+  color: #FFFFFF;
+  background: var(--vio-600);
+}
+
+.desktop-icon:hover .icon,
+.desktop-icon:focus-visible .icon {
+  transform: translateY(-3px);
+  filter: drop-shadow(0 0 6px rgba(182, 255, 59, 0.9));
+}
+
+/* ---------- Accueil ---------- */
+.window--hero .window__body {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-7) var(--space-6) var(--space-6);
+  background:
+    radial-gradient(circle at 100% 0%, var(--c-accent-soft), transparent 42%),
+    var(--c-surface);
+}
+
+.hero__prompt {
+  margin-bottom: var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  color: var(--c-accent);
+}
+
+.hero__name {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--c-ink);
+  padding-bottom: 0.06em;
+}
+
+/* Dégradé de titre (couleurs choisies pour rester contrastées sur la fenêtre) */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero__name {
+    background: var(--grad-title);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+.hero__role {
+  margin-top: var(--space-3);
+  font-size: var(--fs-lead);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.hero__sub {
+  margin-top: var(--space-1);
+  color: var(--c-ink-muted);
+}
+
+.hero__availability {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding: 4px var(--space-3) 5px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  line-height: 1.1;
+  background: var(--c-surface-sunken);
+  box-shadow: var(--bevel-in);
+}
+
+.hero__facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.hero__facts li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.4;
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-thin);
+}
+
+.hero__facts .icon {
+  margin-top: 2px;
+}
+
+/* Barre de chargement : --progress piloté par script.js (100 % sans JS) */
+.loader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-5);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-sm);
+  color: var(--c-ink-muted);
+}
+
+.loader__track {
+  flex: 1 1 10rem;
+  max-width: 320px;
+  height: 20px;
+  padding: 3px;
+  background: var(--c-surface-sunken);
+  box-shadow: var(--bevel-in);
+}
+
+.loader__fill {
+  display: block;
+  width: var(--progress, 100%);
+  height: 100%;
+  background: repeating-linear-gradient(90deg, var(--c-accent) 0 10px, transparent 10px 13px);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* ---------- À propos ---------- */
+.about {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(16rem, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.about__text p {
+  max-width: 65ch;
+  font-size: 1.0625rem;
+}
+
+.about__text p + p {
+  margin-top: var(--space-4);
+}
+
+/* Fiche « Propriétés système » */
+.props {
+  padding: var(--space-4);
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-out);
+}
+
+.props__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  font-weight: 400;
+  border-bottom: 1px solid var(--c-bevel-shadow);
+}
+
+.props__list > div {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px dotted var(--c-bevel-shadow);
+}
+
+.props__list > div:last-child {
+  border-bottom: 0;
+}
+
+.props__list dt {
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-sm);
+  line-height: 1.3;
+  color: var(--c-ink-muted);
+}
+
+.props__list dd {
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.props__list dd .status-dot {
+  margin-right: 4px;
+  vertical-align: -1px;
+}
+
+/* ---------- Parcours (vue « détails ») ---------- */
+.window__body {
+  --log-cols: minmax(0, 1.5fr) minmax(0, 1fr) 9.5rem;
+}
+
+.explorer-head {
+  display: grid;
+  grid-template-columns: var(--log-cols);
+  gap: var(--space-4);
+  padding: 4px var(--space-4) 5px 2.25rem;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-sm);
+  line-height: 1;
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-out);
+}
+
+.explorer-head span:last-child {
+  text-align: right;
+}
+
+.log {
+  border: 1px solid var(--c-bevel-shadow);
+  border-top: 0;
+}
+
+.log--edu {
+  border-top: 1px solid var(--c-bevel-shadow);
+}
+
+.log > li + li {
+  border-top: 1px dashed var(--c-bevel-shadow);
+}
+
+.log__summary {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--log-cols);
+  gap: var(--space-1) var(--space-4);
+  align-items: baseline;
+  padding: var(--space-3) var(--space-4) var(--space-3) 2.25rem;
+  list-style: none;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.log__summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Triangle pixel qui pivote à l'ouverture */
+.log__summary::before {
+  content: "";
+  position: absolute;
+  left: var(--space-3);
+  top: calc(var(--space-3) + 0.42em);
+  width: 9px;
+  height: 9px;
+  background: var(--c-ink);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transition: transform var(--dur-base) var(--ease);
+}
+
+details[open] > .log__summary::before {
+  transform: rotate(90deg);
+}
+
+.log__summary:hover {
+  background: var(--c-accent-soft);
+}
+
+/* Formation : lignes non repliables */
+.log__summary--static {
+  cursor: default;
+}
+
+.log__summary--static::before {
+  clip-path: none;
+  width: 7px;
+  height: 7px;
+  background: var(--c-accent);
+}
+
+.log__summary--static:hover {
+  background: none;
+}
+
+.log__role {
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.log__org {
+  font-size: var(--fs-small);
+  color: var(--c-ink-muted);
+}
+
+.log__date {
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-sm);
+  line-height: 1.2;
+  text-align: right;
+  white-space: nowrap;
+  color: var(--c-accent-strong);
+}
+
+.log__content {
+  padding: 0 var(--space-4) var(--space-4) 2.25rem;
+  max-width: 82ch;
+}
+
+.log__meta {
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-small);
+  font-style: italic;
+  color: var(--c-ink-muted);
+}
+
+/* ---------- Projets ---------- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  padding: var(--space-2);
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-out);
+}
+
+.toolbar__label {
+  padding: 0 var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  color: var(--c-ink-muted);
+}
+
+.programs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: var(--space-5);
+  align-items: start;
+}
+
+/* Carte « programme » */
+.program {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-4);
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-out);
+  transition: transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
+}
+
+.program:hover,
+.program:focus-within {
+  transform: translateY(-3px);
+  box-shadow: var(--bevel-out), var(--glow);
+}
+
+/* Petite animation quand un filtre fait réapparaître une carte */
+.program.is-entering {
+  animation: pop-in var(--dur-slow) var(--ease);
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+}
+
+.program__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.program__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.program__title {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.program__summary {
+  font-size: 0.9375rem;
+}
+
+.program__props > summary {
+  list-style: none;
+}
+
+.program__props > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Indicateur ouvert/fermé du bouton « Propriétés » */
+.program__props > summary::after {
+  content: "+";
+}
+
+.program__props[open] > summary::after {
+  content: "−";
+}
+
+.program__props[open] > summary {
+  box-shadow: var(--bevel-in);
+}
+
+.program__props .bullets {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  font-size: var(--fs-small);
+  background: var(--c-surface);
+  box-shadow: var(--bevel-in);
+}
+
+.stack-list {
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+
+.programs__empty {
+  padding: var(--space-5);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  text-align: center;
+  color: var(--c-ink-muted);
+  background: var(--c-surface-sunken);
+  box-shadow: var(--bevel-in);
+}
+
+.programs__more {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-5);
+}
+
+/* ---------- Compétences ---------- */
+.skills {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.skill-groups {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.skill-group {
+  padding: var(--space-4);
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-out);
+}
+
+.skill-group__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: var(--lh-tight);
+}
+
+/* Terminal : écran CRT, texte néon, lignes de balayage optionnelles */
+.terminal {
+  padding: 3px;
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-out);
+}
+
+.terminal__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 5px var(--space-2) 6px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  line-height: 1;
+  color: var(--c-title-text);
+  background: var(--c-title-active);
+}
+
+.terminal__screen {
+  position: relative;
+  margin-top: 3px;
+  min-height: 16rem;
+  padding: var(--space-4);
+  overflow: hidden;
+  font-family: var(--font-ui);
+  font-size: var(--fs-term);
+  line-height: 1.25;
+  color: var(--c-term-text);
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(124, 255, 107, 0.07), transparent 70%),
+    var(--c-term-bg);
+  box-shadow: var(--bevel-in);
+  text-shadow: 0 0 6px rgba(124, 255, 107, 0.45);
+}
+
+/* Lignes de balayage (désactivables dans « Paramètres d'affichage ») */
+.terminal__screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 3px);
+}
+
+:root[data-crt="off"] .terminal__screen::after {
+  display: none;
+}
+
+:root[data-crt="off"] .terminal__screen {
+  text-shadow: none;
+}
+
+.t-line {
+  overflow-wrap: anywhere;
+}
+
+.t-line + .t-line {
+  margin-top: 4px;
+}
+
+.t-prompt {
+  color: var(--c-term-prompt);
+}
+
+.t-out {
+  color: #D4FFCC;
+}
+
+/* Lecture « tapée » : les lignes apparaissent une par une, une seule fois */
+.js .terminal:not(.is-played) .t-line {
+  opacity: 0;
+}
+
+.js .terminal.is-playing .t-line {
+  animation: line-in 0.3s var(--ease) both;
+  animation-delay: calc(var(--i) * 0.38s);
+}
+
+@keyframes line-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Langues : niveau en toutes lettres + jauge à 3 segments */
+.langs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: var(--space-3);
+}
+
+.lang {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-thin);
+}
+
+.lang__name {
+  font-weight: 700;
+}
+
+.lang__level {
+  grid-column: 1 / -1;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-sm);
+  line-height: 1.2;
+  color: var(--c-ink-muted);
+}
+
+.lang__meter {
+  display: flex;
+  gap: 3px;
+}
+
+.lang__meter i {
+  width: 18px;
+  height: 12px;
+  background: var(--c-surface);
+  box-shadow: var(--bevel-in);
+}
+
+.lang[data-level="1"] .lang__meter i:nth-child(-n + 1),
+.lang[data-level="2"] .lang__meter i:nth-child(-n + 2),
+.lang[data-level="3"] .lang__meter i {
+  background: var(--c-accent);
+  box-shadow: var(--bevel-thin);
+}
+
+/* ---------- Engagement & intérêts ---------- */
+.engagement__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.panel {
+  padding: var(--space-5);
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-out);
+}
+
+.panel__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+}
+
+.panel__org {
+  margin-top: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-sm);
+  color: var(--c-accent-strong);
+}
+
+.panel__meta {
+  margin: var(--space-2) 0 var(--space-4);
+  font-size: var(--fs-small);
+  color: var(--c-ink-muted);
+}
+
+.interests {
+  margin-top: var(--space-3);
+}
+
+.interests li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  font-weight: 600;
+  border-bottom: 1px dotted var(--c-bevel-shadow);
+}
+
+.interests li:last-child {
+  border-bottom: 0;
+}
+
+.icon-sparkle {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--c-accent);
+}
+
+/* ---------- Contact (boîte de dialogue centrée dans la colonne) ---------- */
+.stack > .window--dialog {
+  --dialog-w: min(46rem, 100% - var(--desk-offset));
+  width: var(--dialog-w);
+  margin-left: calc(var(--desk-offset) + (100% - var(--desk-offset) - var(--dialog-w)) / 2);
+}
+
+.dialog__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.dialog__icon {
+  margin-top: 4px;
+}
+
+.dialog__text .section-title {
+  margin-bottom: var(--space-3);
+}
+
+.dialog__email {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+}
+
+.dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c-bevel-shadow);
+}
+
+
+/* ==========================================================================
+   10. BARRE DES TÂCHES, MENU « BA », PARAMÈTRES, TOAST
+   ========================================================================== */
+.taskbar {
+  --c-focus: var(--acid-400);   /* focus vert acide sur fond sombre */
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-taskbar);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: calc(var(--taskbar-h) + env(safe-area-inset-bottom, 0px));
+  padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+  color: var(--c-taskbar-text);
+  background: var(--c-taskbar);
+  box-shadow:
+    inset 0 2px 0 var(--lav-300),
+    inset 0 3px 0 rgba(255, 255, 255, 0.12),
+    0 -6px 24px rgba(27, 21, 48, 0.25);
+}
+
+/* Bouton « BA » en chrome */
+.taskbar__start {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 100%;
+  padding: 0 var(--space-4) 0 var(--space-3);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-900);
+  background: linear-gradient(180deg, #FFFFFF 0%, #EDEBF3 42%, #C9C5D8 56%, #F5F5FA 100%);
+  border: 0;
+  border-radius: var(--r-os);
+  box-shadow:
+    inset -1px -1px 0 var(--ink-900),
+    inset 1px 1px 0 #FFFFFF,
+    inset -2px -2px 0 var(--grey-500),
+    inset 2px 2px 0 #F5F5FA;
+  transition: box-shadow var(--dur-fast) var(--ease);
+}
+
+.taskbar__start:hover {
+  box-shadow:
+    inset -1px -1px 0 var(--ink-900),
+    inset 1px 1px 0 #FFFFFF,
+    inset -2px -2px 0 var(--grey-500),
+    inset 2px 2px 0 #F5F5FA,
+    var(--glow);
+}
+
+.taskbar__start[aria-expanded="true"] {
+  background: linear-gradient(180deg, #C9C5D8 0%, #EDEBF3 100%);
+  box-shadow:
+    inset 1px 1px 0 var(--ink-900),
+    inset 2px 2px 0 var(--grey-500);
+}
+
+.taskbar__tasks {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+  height: 100%;
+}
+
+.taskbar__tasks li {
+  display: flex;
+  min-width: 0;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  max-width: 11rem;
+  padding: 0 var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--c-taskbar-text);
+  background: var(--c-taskbar-item);
+  box-shadow: inset -1px -1px 0 #000000, inset 1px 1px 0 rgba(255, 255, 255, 0.22);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.task span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task:hover {
+  background: #4A4066;
+}
+
+/* Fenêtre visible à l'écran : bouton enfoncé, violet */
+.task[aria-current="true"] {
+  color: #FFFFFF;
+  background: var(--c-taskbar-item-active);
+  box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 rgba(255, 255, 255, 0.22);
+}
+
+/* Fenêtre fermée : bouton estompé, cliquer la restaure */
+.task.is-closed {
+  opacity: 0.6;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(237, 233, 254, 0.35);
+}
+
+.taskbar__tray {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+  padding: 0 var(--space-2);
+  background: rgba(0, 0, 0, 0.22);
+  box-shadow: inset 1px 1px 0 #000000, inset -1px -1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.tray-btn {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 6px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  line-height: 1;
+  color: var(--c-taskbar-text);
+  background: transparent;
+  border: 0;
+}
+
+.tray-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tray-clock {
+  min-width: 3.4em;
+  padding: 0 var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  text-align: center;
+}
+
+/* ---------- Menu « BA » ---------- */
+.start-menu {
+  position: fixed;
+  left: 6px;
+  bottom: calc(var(--taskbar-h) + env(safe-area-inset-bottom, 0px));
+  z-index: var(--z-menu);
+  display: flex;
+  width: min(26rem, 100vw - 12px);
+  max-height: calc(100dvh - var(--taskbar-h) - 24px);
+  padding: 3px;
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-out), var(--shadow-window);
+  transform-origin: 0 100%;
+  animation: menu-in var(--dur-base) var(--ease);
+}
+
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+}
+
+/* Bandeau vertical façon menu Démarrer */
+.start-menu__band {
+  display: flex;
+  flex: none;
+  align-items: flex-end;
+  justify-content: center;
+  width: 42px;
+  padding-bottom: var(--space-3);
+  background: linear-gradient(0deg, var(--vio-800) 0%, var(--vio-600) 60%, var(--vio-400) 100%);
+}
+
+.start-menu__band span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+}
+
+.start-menu__band b {
+  color: var(--acid-400);
+}
+
+.start-menu__inner {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.start-menu__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  color: #FFFFFF;
+  background: var(--c-title-active);
+}
+
+.start-menu__user strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.start-menu__user span {
+  font-size: var(--fs-small);
+}
+
+.start-menu__cols {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+}
+
+.start-menu__nav {
+  padding: 4px;
+  background: var(--c-surface);
+  box-shadow: var(--bevel-in);
+}
+
+.start-menu__nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--c-ink);
+}
+
+.start-menu__nav a:hover,
+.start-menu__nav a:focus-visible {
+  color: #FFFFFF;
+  background: var(--vio-600);
+}
+
+.start-menu__nav a[aria-current="true"] {
+  box-shadow: inset 4px 0 0 var(--c-accent);
+}
+
+.start-menu__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.start-menu__heading {
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui-sm);
+  color: var(--c-ink-muted);
+}
+
+.start-menu__side a {
+  display: block;
+  padding: 6px 0;
+  font-weight: 600;
+}
+
+.start-menu__settings {
+  margin-top: auto;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.05;
+}
+
+/* ---------- Dialogue « Paramètres d'affichage » ---------- */
+dialog.window {
+  width: min(30rem, 100vw - 2rem);
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  color: var(--c-ink);
+  border: 0;
+  overflow: auto;
+}
+
+dialog.window::backdrop {
+  background: rgba(27, 21, 48, 0.5);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+dialog[open] {
+  animation: window-open var(--dur-base) var(--ease);
+}
+
+.settings__body {
+  padding: var(--space-5);
+}
+
+/* Cadre de groupe façon années 2000 */
+.settings__group {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-2) var(--space-4) var(--space-3);
+  border: 1px solid var(--c-bevel-shadow);
+  box-shadow: 1px 1px 0 var(--c-bevel-light), inset 1px 1px 0 var(--c-bevel-light);
+}
+
+.settings__group legend {
+  padding: 0 var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 40px;
+  cursor: pointer;
+}
+
+.option input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--vio-600);
+}
+
+.swatch {
+  flex: none;
+  width: 30px;
+  height: 20px;
+  box-shadow: var(--bevel-in);
+}
+
+.swatch--auto  { background: linear-gradient(135deg, #F4F1FF 50%, #1A1528 50%); }
+.swatch--light { background: linear-gradient(135deg, #F4F1FF, #C4B5FD); }
+.swatch--dark  { background: linear-gradient(135deg, #1A1528, #7C3AED); }
+
+.settings .dialog__actions {
+  margin-top: var(--space-4);
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  right: var(--space-3);
+  bottom: calc(var(--taskbar-h) + var(--space-3) + env(safe-area-inset-bottom, 0px));
+  z-index: var(--z-toast);
+  max-width: min(22rem, 100vw - 24px);
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-ui);
+  font-size: var(--fs-ui);
+  line-height: 1.2;
+  color: var(--c-ink);
+  background: var(--c-surface-alt);
+  box-shadow: var(--bevel-out), var(--shadow-window);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+
+/* ==========================================================================
+   11. APPARITION AU SCROLL
+   Sans JS (.no-js), tout est visible d'emblée.
+   ========================================================================== */
+.js .window--hero {
+  animation: window-open var(--dur-slow) var(--ease) both;
+}
+
+@keyframes window-open {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+}
+
+.js .reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(0.985);
+  transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease);
+}
+
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+
+/* ==========================================================================
+   12. RESPONSIVE
+   ========================================================================== */
+
+/* Desktop étroit : la barre des tâches n'affiche plus que les icônes */
+@media (max-width: 1279px) {
+  .task {
+    padding: 0 10px;
+  }
+
+  .task span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* Tablette : icônes de bureau en rangée, une seule colonne de contenu */
+@media (max-width: 1023px) {
+  .desktop {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-4);
+    padding-top: var(--space-6);
+  }
+
+  .desktop-icons ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .desktop-icon {
+    width: 88px;
+  }
+
+  .stack {
+    --desk-offset: 0px;
+  }
+
+  .site-footer__inner {
+    margin-left: 0;
+  }
+
+  .about,
+  .skills,
+  .engagement__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .props {
+    max-width: 32rem;
+  }
+}
+
+/* Parcours : colonnes repliées sous 900px */
+@media (max-width: 899px) {
+  .explorer-head {
+    display: none;
+  }
+
+  .log {
+    border-top: 1px solid var(--c-bevel-shadow);
+  }
+
+  .log__summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .log__date {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .log__org {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Mobile : le « bureau » se simplifie */
+@media (max-width: 639px) {
+  :root {
+    --gutter: var(--space-3);
+  }
+
+  .desktop {
+    padding-top: var(--space-4);
+  }
+
+  /* Plus d'icônes de bureau ni de boutons de tâches : tout passe par le menu « BA » */
+  .desktop-icons,
+  .taskbar__tasks {
+    display: none;
+  }
+
+  .taskbar {
+    justify-content: space-between;
+  }
+
+  /* Seul « réduire » reste : agrandir/fermer n'ont pas de sens sur petit écran */
+  .window__btn[data-action="maximize"],
+  .window__btn[data-action="close"] {
+    display: none;
+  }
+
+  .window__body,
+  .window--hero .window__body {
+    padding: var(--space-4);
+  }
+
+  .stack {
+    gap: var(--space-6);
+  }
+
+  .hero__actions .btn {
+    flex: 1 1 auto;
+  }
+
+  .log__summary {
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: 2rem;
+  }
+
+  .log__date {
+    grid-row: auto;
+    grid-column: 1;
+    text-align: left;
+  }
+
+  .log__content {
+    padding-left: 2rem;
+  }
+
+  .programs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .props__list > div {
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+  }
+
+  .dialog__row {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .dialog__actions .btn {
+    flex: 1 1 auto;
+  }
+
+  /* Menu « BA » : panneau pleine largeur qui monte du bas */
+  .start-menu {
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: calc(100dvh - var(--taskbar-h) - env(safe-area-inset-bottom, 0px));
+  }
+
+  .start-menu__band {
+    width: 34px;
+  }
+
+  .start-menu__cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Fond d'écran allégé */
+  .wallpaper__blob--2,
+  .wallpaper__blob--3,
+  .sparkle:nth-of-type(n + 3) {
+    display: none;
+  }
+
+  .wallpaper__grid {
+    animation: none;
+  }
+}
+
+
+/* ==========================================================================
+   13. MOUVEMENT RÉDUIT & IMPRESSION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .js .reveal,
+  .js .window--hero {
+    opacity: 1;
+    transform: none;
+  }
+
+  .js .terminal .t-line {
+    opacity: 1;
+  }
+
+  .caret {
+    animation: none;
+  }
+
+  .sparkle {
+    opacity: 0.8;
+    transform: none;
+  }
+
+  .program:hover,
+  .program:focus-within {
+    transform: none;
+  }
+}
+
+@media print {
+  .wallpaper,
+  .taskbar,
+  .start-menu,
+  .toast,
+  .skip-link,
+  .desktop-icons,
+  .window__controls,
+  .toolbar,
+  .loader,
+  .programs__more {
+    display: none !important;
+  }
+
+  body {
+    padding: 0;
+    background: #FFFFFF;
+  }
+
+  .desktop,
+  .stack > .window,
+  .site-footer__inner {
+    display: block;
+    margin-left: 0;
+  }
+
+  .window {
+    box-shadow: none;
+    border: 1px solid #000000;
+    break-inside: avoid;
+  }
+
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
