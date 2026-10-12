@@ -1,6 +1,0 @@
-feat: design system CSS (thème marbre & phosphore)
-
-- Variables CSS complètes + dark mode
-- Layout responsive (grid/flexbox, burger mobile)
-- Accents antiques : chiffres romains, frises, scanlines CRT
-- Accessibilité : focus visible, reduced-motion

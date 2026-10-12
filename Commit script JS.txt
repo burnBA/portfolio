@@ -1,7 +1,0 @@
-feat: interactions JS vanilla
-
-- Dark mode persistant (localStorage + prefers-color-scheme)
-- Menu burger mobile avec gestion ARIA
-- Filtrage projets par statut + expand des détails
-- Scroll reveal via IntersectionObserver (avec fallback)
-- Année du footer automatique
