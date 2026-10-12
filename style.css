@@ -285,7 +285,9 @@ h1, h2, h3, p, ul, ol, dl, dd, figure {
 }
 
 ul[class],
-ol[class] {
+ol[class],
+nav ul,
+.start-menu ul {
   list-style: none;
   padding: 0;
 }
@@ -816,7 +818,7 @@ main:focus {
 .btn--tab[aria-pressed="true"] {
   color: var(--c-accent-strong);
   background: var(--c-surface);
-  box-shadow: var(--bevel-in);
+  box-shadow: var(--bevel-in), inset 0 -3px 0 var(--c-accent);
 }
 
 /* Tags de statut (pilules) : texte + forme, jamais la couleur seule */
@@ -1487,7 +1489,7 @@ details[open] > .log__summary::before {
 /* Langues : niveau en toutes lettres + jauge à 3 segments */
 .langs {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
   gap: var(--space-3);
 }
 
