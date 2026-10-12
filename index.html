@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  BA·OS 2K — Portfolio de Bruno Alves
+  Direction artistique : Y2K × anciens systèmes d'exploitation.
+  Le site imite un bureau d'ordinateur de l'an 2000 :
+    - chaque section est une « fenêtre » (en flux normal, on scrolle) ;
+    - la navigation est une barre des tâches + un menu « BA » ;
+    - le contact est une boîte de dialogue, la cyber un terminal.
+  Textes en français dans le HTML ; la version anglaise est appliquée
+  par script.js à partir du dictionnaire assets/i18n.js (attributs data-i18n).
+  ============================================================
+-->
+<html lang="fr" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- Référencement et partage -->
+  <title>Bruno Alves — Cybersécurité, systèmes &amp; réseaux · Genève</title>
+  <meta name="description" content="Étudiant Bachelor en cybersécurité, systèmes et réseaux à Genève. Infrastructure, durcissement AD, pentest et Blue Team. En recherche d'alternance, de stage ou de missions.">
+  <meta name="author" content="Bruno Alves">
+  <link rel="canonical" href="https://burnba.github.io/portfolio/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Bruno Alves — Cybersécurité, systèmes &amp; réseaux · Genève">
+  <meta property="og:description" content="Étudiant Bachelor en cybersécurité, systèmes et réseaux à Genève. En recherche d'alternance, de stage ou de missions.">
+  <meta property="og:url" content="https://burnba.github.io/portfolio/">
+  <meta property="og:locale" content="fr_CH">
+  <meta property="og:locale:alternate" content="en_GB">
+  <meta name="theme-color" content="#4C1D95">
+
+  <!-- Favicons : monogramme « BA » en pixel art -->
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <!-- 3 polices Google Fonts : Unbounded (display), Manrope (texte), VT323 (UI OS + terminal) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@600;700;800&family=VT323&display=swap">
+
+  <!--
+    Script critique inline : s'exécute avant l'affichage pour éviter un
+    « flash » du mauvais thème. Il marque aussi que JS est actif (classe .js),
+    ce qui autorise les animations d'apparition (sinon tout reste visible).
+  -->
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.remove('no-js');
+      root.classList.add('js');
+      try {
+        var theme = localStorage.getItem('baos-theme');
+        if (theme === 'light' || theme === 'dark') root.setAttribute('data-theme', theme);
+        if (localStorage.getItem('baos-crt') === 'off') root.setAttribute('data-crt', 'off');
+      } catch (e) { /* stockage indisponible (navigation privée) : on garde les valeurs par défaut */ }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="style.css">
+  <script src="assets/i18n.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <!-- Sprite d'icônes pixel art (généré, voir README) : utilisé via <use href="#id"> -->
+  <!--SPRITE:START-->
+<svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+<symbol id="i-monogram" viewBox="0 0 16 16"><path fill="#4C1D95" d="M1 1h12v1h-12zM14 1h1v1h-1zM1 2h11v1h-11zM1 3h12v1h-12zM14 3h1v1h-1zM1 4h1v1h-1zM6 4h3v1h-3zM12 4h3v1h-3zM1 5h1v1h-1zM7 5h1v1h-1zM9 5h1v1h-1zM13 5h2v1h-2zM1 6h1v1h-1zM4 6h2v1h-2zM10 6h2v1h-2zM14 6h1v1h-1zM1 7h1v1h-1zM6 7h1v1h-1zM10 7h2v1h-2zM14 7h1v1h-1z"/><path fill="#B6FF3B" d="M13 1h1v1h-1zM12 2h3v1h-3zM13 3h1v1h-1z"/><path fill="#C4B5FD" d="M0 0h16v1h-16zM0 1h1v1h-1zM0 2h1v1h-1zM0 3h1v1h-1zM0 4h1v1h-1zM0 5h1v1h-1zM0 6h1v1h-1zM0 7h1v1h-1zM0 8h1v1h-1zM0 9h1v1h-1zM0 10h1v1h-1zM0 11h1v1h-1zM0 12h1v1h-1zM0 13h1v1h-1zM0 14h1v1h-1zM0 15h1v1h-1z"/><path fill="#1B1530" d="M15 1h1v1h-1zM15 2h1v1h-1zM15 3h1v1h-1zM15 4h1v1h-1zM15 5h1v1h-1zM15 6h1v1h-1zM15 7h1v1h-1zM15 8h1v1h-1zM15 9h1v1h-1zM15 10h1v1h-1zM15 11h1v1h-1zM15 12h1v1h-1zM15 13h1v1h-1zM15 14h1v1h-1zM1 15h15v1h-15z"/><path fill="#E8E6F0" d="M2 8h1v1h-1zM6 8h1v1h-1zM8 8h5v1h-5zM2 9h1v1h-1zM6 9h1v1h-1zM8 9h1v1h-1zM12 9h1v1h-1zM2 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM12 10h1v1h-1zM2 11h4v1h-4zM8 11h1v1h-1zM12 11h1v1h-1z"/><path fill="#B9B6C8" d="M2 7h4v1h-4zM8 7h1v1h-1zM12 7h1v1h-1z"/><path fill="#1B1530" d="M3 5h3v1h-3zM10 5h2v1h-2zM3 6h1v1h-1zM7 6h1v1h-1zM9 6h1v1h-1zM13 6h1v1h-1zM7 7h1v1h-1zM9 7h1v1h-1zM13 7h1v1h-1zM3 8h3v1h-3zM13 8h1v1h-1zM3 9h1v1h-1zM7 9h1v1h-1zM9 9h3v1h-3zM13 9h1v1h-1zM3 10h1v1h-1zM7 10h1v1h-1zM9 10h1v1h-1zM13 10h1v1h-1zM7 11h1v1h-1zM9 11h1v1h-1zM13 11h1v1h-1zM3 12h4v1h-4zM9 12h1v1h-1zM13 12h1v1h-1z"/><path fill="#7C3AED" d="M1 8h1v1h-1zM7 8h1v1h-1zM14 8h1v1h-1zM1 9h1v1h-1zM4 9h2v1h-2zM14 9h1v1h-1zM1 10h1v1h-1zM4 10h2v1h-2zM10 10h2v1h-2zM14 10h1v1h-1zM1 11h1v1h-1zM6 11h1v1h-1zM10 11h2v1h-2zM14 11h1v1h-1zM1 12h2v1h-2zM7 12h2v1h-2zM10 12h3v1h-3zM14 12h1v1h-1zM1 13h14v1h-14zM1 14h14v1h-14z"/><path fill="#FFFFFF" d="M2 4h4v1h-4zM9 4h3v1h-3zM2 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM12 5h1v1h-1zM2 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM12 6h1v1h-1z"/></symbol>
+<symbol id="i-sparkle" viewBox="0 0 24 24"><path fill="currentColor" d="M12 0C12.8 7.6 16.4 11.2 24 12C16.4 12.8 12.8 16.4 12 24C11.2 16.4 7.6 12.8 0 12C7.6 11.2 11.2 7.6 12 0Z"/></symbol>
+<symbol id="i-computer" viewBox="0 0 16 16"><path style="fill:var(--ico-c,#D9D5E6)" d="M3 2h10v1h-10zM3 3h1v1h-1zM12 3h1v1h-1zM3 4h1v1h-1zM12 4h1v1h-1zM3 5h1v1h-1zM12 5h1v1h-1zM3 6h1v1h-1zM12 6h1v1h-1zM3 7h1v1h-1zM12 7h1v1h-1zM3 8h1v1h-1zM12 8h1v1h-1zM3 9h10v1h-10zM5 13h6v1h-6z"/><path style="fill:var(--ico-d,#0B0814)" d="M7 11h2v1h-2z"/><path style="fill:var(--ico-g,#B6FF3B)" d="M6 5h1v1h-1z"/><path style="fill:var(--ico-k,#1B1530)" d="M2 1h12v1h-12zM2 2h1v1h-1zM13 2h1v1h-1zM2 3h1v1h-1zM4 3h8v1h-8zM13 3h1v1h-1zM2 4h1v1h-1zM4 4h1v1h-1zM11 4h1v1h-1zM13 4h1v1h-1zM2 5h1v1h-1zM4 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM11 6h1v1h-1zM13 6h1v1h-1zM2 7h1v1h-1zM4 7h1v1h-1zM11 7h1v1h-1zM13 7h1v1h-1zM2 8h1v1h-1zM4 8h8v1h-8zM13 8h1v1h-1zM2 9h1v1h-1zM13 9h1v1h-1zM2 10h12v1h-12zM6 11h1v1h-1zM9 11h1v1h-1zM4 12h8v1h-8zM4 13h1v1h-1zM11 13h1v1h-1zM4 14h8v1h-8z"/><path style="fill:var(--ico-l,#C4B5FD)" d="M9 7h1v1h-1z"/><path style="fill:var(--ico-v,#7C3AED)" d="M5 4h6v1h-6zM5 5h1v1h-1zM7 5h4v1h-4zM5 6h6v1h-6zM5 7h4v1h-4zM10 7h1v1h-1z"/></symbol>
+<symbol id="i-notepad" viewBox="0 0 16 16"><path style="fill:var(--ico-g,#B6FF3B)" d="M10 12h2v1h-2z"/><path style="fill:var(--ico-k,#1B1530)" d="M3 1h10v1h-10zM3 2h1v1h-1zM12 2h1v1h-1zM3 3h1v1h-1zM12 3h1v1h-1zM3 4h1v1h-1zM5 4h6v1h-6zM12 4h1v1h-1zM3 5h1v1h-1zM12 5h1v1h-1zM3 6h1v1h-1zM5 6h5v1h-5zM12 6h1v1h-1zM3 7h1v1h-1zM12 7h1v1h-1zM3 8h1v1h-1zM5 8h6v1h-6zM12 8h1v1h-1zM3 9h1v1h-1zM12 9h1v1h-1zM3 10h1v1h-1zM5 10h4v1h-4zM12 10h1v1h-1zM3 11h1v1h-1zM12 11h1v1h-1zM3 12h1v1h-1zM12 12h1v1h-1zM3 13h1v1h-1zM12 13h1v1h-1zM3 14h10v1h-10z"/><path style="fill:var(--ico-v,#7C3AED)" d="M4 2h8v1h-8z"/><path style="fill:var(--ico-w,#FFFFFF)" d="M4 3h8v1h-8zM4 4h1v1h-1zM11 4h1v1h-1zM4 5h8v1h-8zM4 6h1v1h-1zM10 6h2v1h-2zM4 7h8v1h-8zM4 8h1v1h-1zM11 8h1v1h-1zM4 9h8v1h-8zM4 10h1v1h-1zM9 10h3v1h-3zM4 11h8v1h-8zM4 12h6v1h-6zM4 13h8v1h-8z"/></symbol>
+<symbol id="i-log" viewBox="0 0 16 16"><path style="fill:var(--ico-g,#B6FF3B)" d="M4 6h1v1h-1zM4 8h1v1h-1zM4 10h1v1h-1zM4 12h1v1h-1z"/><path style="fill:var(--ico-k,#1B1530)" d="M2 1h8v1h-8zM2 2h1v1h-1zM9 2h2v1h-2zM2 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM2 4h1v1h-1zM9 4h4v1h-4zM2 5h1v1h-1zM12 5h1v1h-1zM2 6h1v1h-1zM6 6h5v1h-5zM12 6h1v1h-1zM2 7h1v1h-1zM12 7h1v1h-1zM2 8h1v1h-1zM6 8h4v1h-4zM12 8h1v1h-1zM2 9h1v1h-1zM12 9h1v1h-1zM2 10h1v1h-1zM6 10h5v1h-5zM12 10h1v1h-1zM2 11h1v1h-1zM12 11h1v1h-1zM2 12h1v1h-1zM6 12h3v1h-3zM12 12h1v1h-1zM2 13h1v1h-1zM12 13h1v1h-1zM2 14h11v1h-11z"/><path style="fill:var(--ico-w,#FFFFFF)" d="M3 2h6v1h-6zM3 3h6v1h-6zM10 3h1v1h-1zM3 4h6v1h-6zM3 5h9v1h-9zM3 6h1v1h-1zM5 6h1v1h-1zM11 6h1v1h-1zM3 7h9v1h-9zM3 8h1v1h-1zM5 8h1v1h-1zM10 8h2v1h-2zM3 9h9v1h-9zM3 10h1v1h-1zM5 10h1v1h-1zM11 10h1v1h-1zM3 11h9v1h-9zM3 12h1v1h-1zM5 12h1v1h-1zM9 12h3v1h-3zM3 13h9v1h-9z"/></symbol>
+<symbol id="i-folder" viewBox="0 0 16 16"><path style="fill:var(--ico-g,#B6FF3B)" d="M12 11h2v1h-2z"/><path style="fill:var(--ico-k,#1B1530)" d="M1 2h5v1h-5zM1 3h1v1h-1zM6 3h1v1h-1zM1 4h1v1h-1zM7 4h8v1h-8zM1 5h1v1h-1zM14 5h1v1h-1zM1 6h14v1h-14zM1 7h1v1h-1zM14 7h1v1h-1zM1 8h1v1h-1zM14 8h1v1h-1zM1 9h1v1h-1zM14 9h1v1h-1zM1 10h1v1h-1zM14 10h1v1h-1zM1 11h1v1h-1zM14 11h1v1h-1zM1 12h1v1h-1zM14 12h1v1h-1zM1 13h14v1h-14z"/><path style="fill:var(--ico-l,#C4B5FD)" d="M2 3h4v1h-4zM2 4h5v1h-5zM2 5h12v1h-12zM3 8h1v1h-1z"/><path style="fill:var(--ico-v,#7C3AED)" d="M2 7h12v1h-12zM2 8h1v1h-1zM4 8h10v1h-10zM2 9h12v1h-12zM2 10h12v1h-12zM2 11h10v1h-10zM2 12h12v1h-12z"/></symbol>
+<symbol id="i-panel" viewBox="0 0 16 16"><path style="fill:var(--ico-c,#D9D5E6)" d="M2 4h12v1h-12zM2 5h1v1h-1zM13 5h1v1h-1zM2 6h12v1h-12zM2 7h1v1h-1zM13 7h1v1h-1zM2 8h12v1h-12zM2 9h1v1h-1zM13 9h1v1h-1zM2 10h12v1h-12z"/><path style="fill:var(--ico-g,#B6FF3B)" d="M4 5h2v1h-2zM7 9h2v1h-2z"/><path style="fill:var(--ico-k,#1B1530)" d="M1 1h14v1h-14zM1 2h1v1h-1zM14 2h1v1h-1zM1 3h14v1h-14zM1 4h1v1h-1zM14 4h1v1h-1zM1 5h1v1h-1zM3 5h1v1h-1zM6 5h7v1h-7zM14 5h1v1h-1zM1 6h1v1h-1zM14 6h1v1h-1zM1 7h1v1h-1zM3 7h6v1h-6zM11 7h2v1h-2zM14 7h1v1h-1zM1 8h1v1h-1zM14 8h1v1h-1zM1 9h1v1h-1zM3 9h4v1h-4zM9 9h4v1h-4zM14 9h1v1h-1zM1 10h1v1h-1zM14 10h1v1h-1zM1 11h14v1h-14z"/><path style="fill:var(--ico-v,#7C3AED)" d="M2 2h12v1h-12zM9 7h2v1h-2z"/></symbol>
+<symbol id="i-terminal" viewBox="0 0 16 16"><path style="fill:var(--ico-d,#0B0814)" d="M2 4h12v1h-12zM2 5h1v1h-1zM4 5h10v1h-10zM2 6h2v1h-2zM5 6h9v1h-9zM2 7h1v1h-1zM4 7h1v1h-1zM9 7h5v1h-5zM2 8h12v1h-12zM2 9h12v1h-12z"/><path style="fill:var(--ico-g,#B6FF3B)" d="M3 5h1v1h-1zM4 6h1v1h-1zM3 7h1v1h-1zM5 7h4v1h-4z"/><path style="fill:var(--ico-k,#1B1530)" d="M1 1h14v1h-14zM1 2h1v1h-1zM14 2h1v1h-1zM1 3h14v1h-14zM1 4h1v1h-1zM14 4h1v1h-1zM1 5h1v1h-1zM14 5h1v1h-1zM1 6h1v1h-1zM14 6h1v1h-1zM1 7h1v1h-1zM14 7h1v1h-1zM1 8h1v1h-1zM14 8h1v1h-1zM1 9h1v1h-1zM14 9h1v1h-1zM1 10h14v1h-14z"/><path style="fill:var(--ico-v,#7C3AED)" d="M2 2h10v1h-10z"/><path style="fill:var(--ico-w,#FFFFFF)" d="M12 2h2v1h-2z"/></symbol>
+<symbol id="i-star" viewBox="0 0 16 16"><path style="fill:var(--ico-g,#B6FF3B)" d="M7 1h1v1h-1zM7 2h1v1h-1zM6 3h3v1h-3zM5 4h5v1h-5zM4 5h7v1h-7zM2 6h5v1h-5zM8 6h5v1h-5zM1 7h5v1h-5zM9 7h5v1h-5zM2 8h5v1h-5zM8 8h5v1h-5zM4 9h7v1h-7zM5 10h5v1h-5zM6 11h3v1h-3zM7 12h1v1h-1zM7 13h1v1h-1z"/><path style="fill:var(--ico-k,#1B1530)" d="M7 0h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM5 3h1v1h-1zM9 3h1v1h-1zM4 4h1v1h-1zM10 4h1v1h-1zM2 5h2v1h-2zM11 5h2v1h-2zM0 6h2v1h-2zM13 6h2v1h-2zM0 7h1v1h-1zM14 7h1v1h-1zM0 8h2v1h-2zM13 8h2v1h-2zM2 9h2v1h-2zM11 9h2v1h-2zM4 10h1v1h-1zM10 10h1v1h-1zM5 11h1v1h-1zM9 11h1v1h-1zM6 12h1v1h-1zM8 12h1v1h-1zM6 13h1v1h-1zM8 13h1v1h-1zM7 14h1v1h-1z"/><path style="fill:var(--ico-w,#FFFFFF)" d="M7 6h1v1h-1zM6 7h3v1h-3zM7 8h1v1h-1z"/></symbol>
+<symbol id="i-mail" viewBox="0 0 16 16"><path style="fill:var(--ico-k,#1B1530)" d="M1 3h14v1h-14zM1 4h2v1h-2zM13 4h2v1h-2zM1 5h1v1h-1zM3 5h1v1h-1zM12 5h1v1h-1zM14 5h1v1h-1zM1 6h1v1h-1zM4 6h1v1h-1zM11 6h1v1h-1zM14 6h1v1h-1zM1 7h1v1h-1zM5 7h1v1h-1zM10 7h1v1h-1zM14 7h1v1h-1zM1 8h1v1h-1zM6 8h4v1h-4zM14 8h1v1h-1zM1 9h1v1h-1zM14 9h1v1h-1zM1 10h1v1h-1zM14 10h1v1h-1zM1 11h1v1h-1zM14 11h1v1h-1zM1 12h14v1h-14z"/><path style="fill:var(--ico-v,#7C3AED)" d="M12 10h2v1h-2zM12 11h2v1h-2z"/><path style="fill:var(--ico-w,#FFFFFF)" d="M3 4h10v1h-10zM2 5h1v1h-1zM4 5h8v1h-8zM13 5h1v1h-1zM2 6h2v1h-2zM5 6h6v1h-6zM12 6h2v1h-2zM2 7h3v1h-3zM6 7h4v1h-4zM11 7h3v1h-3zM2 8h4v1h-4zM10 8h4v1h-4zM2 9h12v1h-12zM2 10h10v1h-10zM2 11h10v1h-10z"/></symbol>
+<symbol id="i-info" viewBox="0 0 16 16"><path style="fill:var(--ico-k,#1B1530)" d="M5 1h6v1h-6zM3 2h2v1h-2zM11 2h2v1h-2zM2 3h1v1h-1zM13 3h1v1h-1zM1 4h1v1h-1zM14 4h1v1h-1zM1 5h1v1h-1zM14 5h1v1h-1zM0 6h1v1h-1zM15 6h1v1h-1zM0 7h1v1h-1zM15 7h1v1h-1zM0 8h1v1h-1zM15 8h1v1h-1zM0 9h1v1h-1zM15 9h1v1h-1zM1 10h1v1h-1zM14 10h1v1h-1zM1 11h1v1h-1zM14 11h1v1h-1zM2 12h1v1h-1zM13 12h1v1h-1zM3 13h2v1h-2zM11 13h2v1h-2zM5 14h6v1h-6z"/><path style="fill:var(--ico-v,#7C3AED)" d="M5 2h6v1h-6zM3 3h4v1h-4zM9 3h4v1h-4zM2 4h5v1h-5zM9 4h5v1h-5zM2 5h12v1h-12zM1 6h5v1h-5zM9 6h6v1h-6zM1 7h6v1h-6zM9 7h6v1h-6zM1 8h6v1h-6zM9 8h6v1h-6zM1 9h6v1h-6zM9 9h6v1h-6zM2 10h5v1h-5zM9 10h5v1h-5zM2 11h4v1h-4zM10 11h4v1h-4zM3 12h10v1h-10zM5 13h6v1h-6z"/><path style="fill:var(--ico-w,#FFFFFF)" d="M7 3h2v1h-2zM7 4h2v1h-2zM6 6h3v1h-3zM7 7h2v1h-2zM7 8h2v1h-2zM7 9h2v1h-2zM7 10h2v1h-2zM6 11h4v1h-4z"/></symbol>
+<symbol id="i-shield" viewBox="0 0 16 16"><path style="fill:var(--ico-g,#B6FF3B)" d="M7 4h2v1h-2zM6 5h1v1h-1zM9 5h1v1h-1zM5 6h1v1h-1zM10 6h1v1h-1zM6 7h1v1h-1zM9 7h1v1h-1zM7 8h2v1h-2z"/><path style="fill:var(--ico-k,#1B1530)" d="M4 1h8v1h-8zM2 2h2v1h-2zM12 2h2v1h-2zM2 3h1v1h-1zM13 3h1v1h-1zM2 4h1v1h-1zM13 4h1v1h-1zM2 5h1v1h-1zM13 5h1v1h-1zM2 6h1v1h-1zM13 6h1v1h-1zM2 7h1v1h-1zM13 7h1v1h-1zM2 8h1v1h-1zM13 8h1v1h-1zM3 9h1v1h-1zM12 9h1v1h-1zM3 10h1v1h-1zM12 10h1v1h-1zM4 11h1v1h-1zM11 11h1v1h-1zM5 12h1v1h-1zM10 12h1v1h-1zM6 13h1v1h-1zM9 13h1v1h-1zM7 14h2v1h-2z"/><path style="fill:var(--ico-v,#7C3AED)" d="M4 2h8v1h-8zM3 3h10v1h-10zM3 4h4v1h-4zM9 4h4v1h-4zM3 5h3v1h-3zM10 5h3v1h-3zM3 6h2v1h-2zM11 6h2v1h-2zM3 7h3v1h-3zM10 7h3v1h-3zM3 8h4v1h-4zM9 8h4v1h-4zM4 9h8v1h-8zM4 10h8v1h-8zM5 11h6v1h-6zM6 12h4v1h-4zM7 13h2v1h-2z"/><path style="fill:var(--ico-w,#FFFFFF)" d="M7 5h2v1h-2zM6 6h4v1h-4zM7 7h2v1h-2z"/></symbol>
+<symbol id="i-server" viewBox="0 0 16 16"><path style="fill:var(--ico-c,#D9D5E6)" d="M3 2h10v1h-10zM3 3h1v1h-1zM5 3h3v1h-3zM12 3h1v1h-1zM3 4h10v1h-10zM3 6h10v1h-10zM3 7h1v1h-1zM5 7h3v1h-3zM12 7h1v1h-1zM3 8h10v1h-10zM3 10h10v1h-10zM3 11h1v1h-1zM5 11h3v1h-3zM12 11h1v1h-1zM3 12h10v1h-10z"/><path style="fill:var(--ico-g,#B6FF3B)" d="M4 3h1v1h-1zM4 7h1v1h-1z"/><path style="fill:var(--ico-k,#1B1530)" d="M2 1h12v1h-12zM2 2h1v1h-1zM13 2h1v1h-1zM2 3h1v1h-1zM8 3h4v1h-4zM13 3h1v1h-1zM2 4h1v1h-1zM13 4h1v1h-1zM2 5h12v1h-12zM2 6h1v1h-1zM13 6h1v1h-1zM2 7h1v1h-1zM8 7h4v1h-4zM13 7h1v1h-1zM2 8h1v1h-1zM13 8h1v1h-1zM2 9h12v1h-12zM2 10h1v1h-1zM13 10h1v1h-1zM2 11h1v1h-1zM8 11h4v1h-4zM13 11h1v1h-1zM2 12h1v1h-1zM13 12h1v1h-1zM2 13h12v1h-12zM3 14h2v1h-2zM11 14h2v1h-2z"/><path style="fill:var(--ico-v,#7C3AED)" d="M4 11h1v1h-1z"/></symbol>
+<symbol id="i-robot" viewBox="0 0 16 16"><path style="fill:var(--ico-c,#D9D5E6)" d="M4 3h8v1h-8zM4 4h1v1h-1zM7 4h2v1h-2zM11 4h1v1h-1zM4 5h1v1h-1zM7 5h2v1h-2zM11 5h1v1h-1zM4 6h8v1h-8zM4 7h1v1h-1zM11 7h1v1h-1zM4 8h8v1h-8z"/><path style="fill:var(--ico-g,#B6FF3B)" d="M7 0h1v1h-1zM5 4h2v1h-2zM9 4h2v1h-2zM5 5h2v1h-2zM9 5h2v1h-2z"/><path style="fill:var(--ico-k,#1B1530)" d="M7 1h1v1h-1zM3 2h10v1h-10zM3 3h1v1h-1zM12 3h1v1h-1zM3 4h1v1h-1zM12 4h1v1h-1zM3 5h1v1h-1zM12 5h1v1h-1zM3 6h1v1h-1zM12 6h1v1h-1zM3 7h1v1h-1zM5 7h6v1h-6zM12 7h1v1h-1zM3 8h1v1h-1zM12 8h1v1h-1zM3 9h10v1h-10zM5 10h1v1h-1zM10 10h1v1h-1zM3 11h2v1h-2zM11 11h2v1h-2zM3 12h1v1h-1zM12 12h1v1h-1zM3 13h1v1h-1zM12 13h1v1h-1zM3 14h10v1h-10z"/><path style="fill:var(--ico-l,#C4B5FD)" d="M6 13h1v1h-1z"/><path style="fill:var(--ico-v,#7C3AED)" d="M6 10h4v1h-4zM5 11h6v1h-6zM4 12h8v1h-8zM4 13h2v1h-2zM7 13h5v1h-5z"/></symbol>
+<symbol id="i-floppy" viewBox="0 0 16 16"><path style="fill:var(--ico-c,#D9D5E6)" d="M4 2h7v1h-7zM4 3h5v1h-5zM10 3h1v1h-1zM4 4h5v1h-5zM10 4h1v1h-1zM4 5h7v1h-7z"/><path style="fill:var(--ico-k,#1B1530)" d="M1 1h14v1h-14zM1 2h1v1h-1zM3 2h1v1h-1zM11 2h1v1h-1zM14 2h1v1h-1zM1 3h1v1h-1zM3 3h1v1h-1zM9 3h1v1h-1zM11 3h1v1h-1zM14 3h1v1h-1zM1 4h1v1h-1zM3 4h1v1h-1zM9 4h1v1h-1zM11 4h1v1h-1zM14 4h1v1h-1zM1 5h1v1h-1zM3 5h1v1h-1zM11 5h1v1h-1zM14 5h1v1h-1zM1 6h1v1h-1zM4 6h7v1h-7zM14 6h1v1h-1zM1 7h1v1h-1zM14 7h1v1h-1zM1 8h1v1h-1zM4 8h8v1h-8zM14 8h1v1h-1zM1 9h1v1h-1zM3 9h1v1h-1zM12 9h1v1h-1zM14 9h1v1h-1zM1 10h1v1h-1zM3 10h1v1h-1zM5 10h6v1h-6zM12 10h1v1h-1zM14 10h1v1h-1zM1 11h1v1h-1zM3 11h1v1h-1zM12 11h1v1h-1zM14 11h1v1h-1zM1 12h1v1h-1zM3 12h1v1h-1zM5 12h4v1h-4zM12 12h1v1h-1zM14 12h1v1h-1zM1 13h1v1h-1zM3 13h1v1h-1zM12 13h1v1h-1zM14 13h1v1h-1zM1 14h14v1h-14z"/><path style="fill:var(--ico-v,#7C3AED)" d="M2 2h1v1h-1zM12 2h2v1h-2zM2 3h1v1h-1zM12 3h2v1h-2zM2 4h1v1h-1zM12 4h2v1h-2zM2 5h1v1h-1zM12 5h2v1h-2zM2 6h2v1h-2zM11 6h3v1h-3zM2 7h12v1h-12zM2 8h2v1h-2zM12 8h2v1h-2zM2 9h1v1h-1zM13 9h1v1h-1zM2 10h1v1h-1zM13 10h1v1h-1zM2 11h1v1h-1zM13 11h1v1h-1zM2 12h1v1h-1zM13 12h1v1h-1zM2 13h1v1h-1zM13 13h1v1h-1z"/><path style="fill:var(--ico-w,#FFFFFF)" d="M4 9h8v1h-8zM4 10h1v1h-1zM11 10h1v1h-1zM4 11h8v1h-8zM4 12h1v1h-1zM9 12h3v1h-3zM4 13h8v1h-8z"/></symbol>
+<symbol id="i-contrast" viewBox="0 0 16 16"><path style="fill:var(--ico-k,#1B1530)" d="M5 2h6v1h-6zM3 3h2v1h-2zM8 3h5v1h-5zM2 4h1v1h-1zM8 4h6v1h-6zM2 5h1v1h-1zM8 5h6v1h-6zM1 6h1v1h-1zM8 6h7v1h-7zM1 7h1v1h-1zM8 7h7v1h-7zM1 8h1v1h-1zM8 8h7v1h-7zM1 9h1v1h-1zM8 9h7v1h-7zM2 10h1v1h-1zM8 10h6v1h-6zM2 11h1v1h-1zM8 11h6v1h-6zM3 12h2v1h-2zM8 12h5v1h-5zM5 13h6v1h-6z"/><path style="fill:var(--ico-w,#FFFFFF)" d="M5 3h3v1h-3zM3 4h5v1h-5zM3 5h5v1h-5zM2 6h6v1h-6zM2 7h6v1h-6zM2 8h6v1h-6zM2 9h6v1h-6zM3 10h5v1h-5zM3 11h5v1h-5zM5 12h3v1h-3z"/></symbol>
+<symbol id="g-min" viewBox="0 0 8 8"><path fill="currentColor" d="M0 6h6v1h-6zM0 7h6v1h-6z"/></symbol>
+<symbol id="g-max" viewBox="0 0 8 8"><path fill="currentColor" d="M0 0h8v1h-8zM0 1h8v1h-8zM0 2h1v1h-1zM7 2h1v1h-1zM0 3h1v1h-1zM7 3h1v1h-1zM0 4h1v1h-1zM7 4h1v1h-1zM0 5h1v1h-1zM7 5h1v1h-1zM0 6h1v1h-1zM7 6h1v1h-1zM0 7h8v1h-8z"/></symbol>
+<symbol id="g-restore" viewBox="0 0 8 8"><path fill="currentColor" d="M2 0h6v1h-6zM2 1h6v1h-6zM2 2h1v1h-1zM7 2h1v1h-1zM0 3h6v1h-6zM7 3h1v1h-1zM0 4h6v1h-6zM7 4h1v1h-1zM0 5h1v1h-1zM5 5h3v1h-3zM0 6h1v1h-1zM5 6h1v1h-1zM0 7h6v1h-6z"/></symbol>
+<symbol id="g-close" viewBox="0 0 8 8"><path fill="currentColor" d="M0 0h2v1h-2zM6 0h2v1h-2zM1 1h2v1h-2zM5 1h2v1h-2zM2 2h4v1h-4zM3 3h2v1h-2zM2 4h4v1h-4zM1 5h2v1h-2zM5 5h2v1h-2zM0 6h2v1h-2zM6 6h2v1h-2z"/></symbol>
+</svg>
+  <!--SPRITE:END-->
+
+  <!-- Lien d'évitement pour la navigation au clavier -->
+  <a class="skip-link" href="#main" data-i18n="skip">Aller au contenu</a>
+
+  <!-- ============ FOND D'ÉCRAN (purement décoratif) ============ -->
+  <div class="wallpaper" aria-hidden="true">
+    <div class="wallpaper__blob wallpaper__blob--1"></div>
+    <div class="wallpaper__blob wallpaper__blob--2"></div>
+    <div class="wallpaper__blob wallpaper__blob--3"></div>
+    <div class="wallpaper__grid"></div>
+    <!-- Étincelles : position et délai passés en variables CSS -->
+    <svg class="sparkle" style="--x: 8%;  --y: 14%; --s: 22px; --d: 0s"><use href="#i-sparkle"/></svg>
+    <svg class="sparkle" style="--x: 88%; --y: 9%;  --s: 30px; --d: 1.2s"><use href="#i-sparkle"/></svg>
+    <svg class="sparkle" style="--x: 72%; --y: 38%; --s: 14px; --d: 2.1s"><use href="#i-sparkle"/></svg>
+    <svg class="sparkle" style="--x: 18%; --y: 62%; --s: 18px; --d: 0.6s"><use href="#i-sparkle"/></svg>
+    <svg class="sparkle" style="--x: 93%; --y: 70%; --s: 20px; --d: 1.8s"><use href="#i-sparkle"/></svg>
+  </div>
+
+  <!-- ============ EN-TÊTE : bureau + fenêtre d'accueil ============ -->
+  <header class="desktop layout" id="top">
+
+    <!-- Icônes de bureau (desktop : colonne ; tablette : rangée ; mobile : masquées) -->
+    <nav class="desktop-icons" aria-label="Raccourcis du bureau" data-i18n-attr="aria-label:nav.desktop">
+      <ul>
+        <li><a class="desktop-icon" href="#about"><svg class="icon icon--32" aria-hidden="true"><use href="#i-notepad"/></svg><span data-i18n="nav.about">À propos</span></a></li>
+        <li><a class="desktop-icon" href="#parcours"><svg class="icon icon--32" aria-hidden="true"><use href="#i-log"/></svg><span data-i18n="nav.career">Parcours</span></a></li>
+        <li><a class="desktop-icon" href="#projets"><svg class="icon icon--32" aria-hidden="true"><use href="#i-folder"/></svg><span data-i18n="nav.projects">Projets</span></a></li>
+        <li><a class="desktop-icon" href="#competences"><svg class="icon icon--32" aria-hidden="true"><use href="#i-panel"/></svg><span data-i18n="nav.skills">Compétences</span></a></li>
+        <li><a class="desktop-icon" href="#terminal"><svg class="icon icon--32" aria-hidden="true"><use href="#i-terminal"/></svg><span>Terminal</span></a></li>
+        <li><a class="desktop-icon" href="#contact"><svg class="icon icon--32" aria-hidden="true"><use href="#i-mail"/></svg><span data-i18n="nav.contact">Contact</span></a></li>
+      </ul>
+    </nav>
+
+    <!-- Fenêtre d'accueil : l'essentiel pour un recruteur en moins de 10 secondes -->
+    <section class="window window--hero" id="accueil" aria-labelledby="hero-title" data-window>
+      <div class="window__titlebar">
+        <svg class="icon icon--16" aria-hidden="true"><use href="#i-computer"/></svg>
+        <span class="window__file" data-i18n="file.hero">bienvenue.exe</span>
+        <div class="window__controls">
+          <button class="window__btn" type="button" data-action="minimize" aria-expanded="true" aria-controls="accueil-body" aria-label="Réduire la fenêtre" data-i18n-attr="aria-label:win.minimize"><svg aria-hidden="true"><use href="#g-min"/></svg></button>
+          <button class="window__btn" type="button" data-action="maximize" aria-pressed="false" aria-label="Agrandir la fenêtre" data-i18n-attr="aria-label:win.maximize"><svg aria-hidden="true"><use href="#g-max"/></svg></button>
+          <button class="window__btn" type="button" data-action="close" aria-label="Fermer (la fenêtre reste dans la barre des tâches)" data-i18n-attr="aria-label:win.close"><svg aria-hidden="true"><use href="#g-close"/></svg></button>
+        </div>
+      </div>
+
+      <div class="window__body hero" id="accueil-body">
+        <p class="hero__prompt"><span aria-hidden="true">&gt;</span> <span data-i18n="hero.prompt">session ouverte · Genève</span><span class="caret" aria-hidden="true"></span></p>
+        <h1 class="hero__name" id="hero-title">Bruno Alves</h1>
+        <p class="hero__role" data-i18n="hero.role">Étudiant Bachelor Cybersécurité, Systèmes &amp; Réseaux</p>
+        <p class="hero__sub" data-i18n="hero.sub">Infrastructure &amp; durcissement · En recherche d'alternance à Genève</p>
+        <p class="hero__availability">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span data-i18n="hero.availability">Disponible : sur site · hybride · à distance</span>
+        </p>
+
+        <!-- Faits marquants (tirés du parcours, aucun chiffre inventé) -->
+        <ul class="hero__facts" aria-label="Faits marquants" data-i18n-attr="aria-label:hero.factsLabel">
+          <li><svg class="icon icon--16" aria-hidden="true"><use href="#i-server"/></svg><span data-i18n="hero.fact1">Migration d'environ 150 VMs vers Proxmox VE, sans perte de données</span></li>
+          <li><svg class="icon icon--16" aria-hidden="true"><use href="#i-shield"/></svg><span data-i18n="hero.fact2">Pipeline multi-agents d'analyse de surface d'attaque</span></li>
+          <li><svg class="icon icon--16" aria-hidden="true"><use href="#i-computer"/></svg><span data-i18n="hero.fact3">Support IT d'environ 600 collaborateurs au CIO</span></li>
+        </ul>
+
+        <!-- Barre de chargement rétro (décorative ; animée par JS, figée si mouvement réduit) -->
+        <div class="loader" aria-hidden="true">
+          <span class="loader__label" data-i18n="hero.loading">Chargement du profil…</span>
+          <span class="loader__track"><span class="loader__fill"></span></span>
+          <span class="loader__value">100 %</span>
+        </div>
+
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#projets" data-i18n="hero.ctaProjects">Voir les projets</a>
+          <a class="btn" href="#parcours" data-i18n="hero.ctaCareer">Mon parcours</a>
+          <a class="btn" href="#contact" data-i18n="hero.ctaContact">Me contacter</a>
+        </div>
+      </div>
+    </section>
+  </header>
+
+  <!-- ============ CONTENU PRINCIPAL : une fenêtre par section ============ -->
+  <main id="main" class="layout stack" tabindex="-1">
+
+    <!-- ---------- À PROPOS ---------- -->
+    <section class="window reveal" id="about" aria-labelledby="about-title" data-window>
+      <div class="window__titlebar">
+        <svg class="icon icon--16" aria-hidden="true"><use href="#i-notepad"/></svg>
+        <span class="window__file">about_me.txt</span>
+        <div class="window__controls">
+          <button class="window__btn" type="button" data-action="minimize" aria-expanded="true" aria-controls="about-body" aria-label="Réduire la fenêtre" data-i18n-attr="aria-label:win.minimize"><svg aria-hidden="true"><use href="#g-min"/></svg></button>
+          <button class="window__btn" type="button" data-action="maximize" aria-pressed="false" aria-label="Agrandir la fenêtre" data-i18n-attr="aria-label:win.maximize"><svg aria-hidden="true"><use href="#g-max"/></svg></button>
+          <button class="window__btn" type="button" data-action="close" aria-label="Fermer (la fenêtre reste dans la barre des tâches)" data-i18n-attr="aria-label:win.close"><svg aria-hidden="true"><use href="#g-close"/></svg></button>
+        </div>
+      </div>
+
+      <div class="window__body about" id="about-body">
+        <div class="about__text">
+          <h2 class="section-title" id="about-title" data-i18n="about.title">À propos</h2>
+          <p data-i18n="about.p1">Je suis en 2e année de Bachelor en cybersécurité, cloud, systèmes et réseaux au Geneva Institute of Technology. En parallèle, je suis un CFC d'informaticien en exploitation et infrastructure, jusqu'en 2029. Je suis établi à Genève depuis plus de 10 ans.</p>
+          <p data-i18n="about.p2">Mon parcours s'est construit en travaillant. J'ai mené quatre ans d'emploi de front avec les études, puis des stages en infrastructure, en support et en cybersécurité. Ces expériences ont confirmé mon choix de spécialité : la sécurité des systèmes, en particulier Active Directory, le pentest et la défense (Blue Team).</p>
+          <p data-i18n="about.p3">Je cherche une alternance, un stage ou des missions à Genève, en cybersécurité comme en IT généraliste. À terme, je veux travailler dans la protection des systèmes informatiques à Genève.</p>
+        </div>
+
+        <!-- Fiche « Propriétés système » : remplace la photo, scannable en un coup d'œil -->
+        <aside class="props" aria-labelledby="props-title">
+          <h3 class="props__title" id="props-title">
+            <svg class="icon icon--16" aria-hidden="true"><use href="#i-computer"/></svg>
+            <span data-i18n="props.title">Propriétés système</span>
+          </h3>
+          <dl class="props__list">
+            <div><dt data-i18n="props.user">Utilisateur</dt><dd>Bruno Alves</dd></div>
+            <div><dt data-i18n="props.location">Emplacement</dt><dd data-i18n="props.locationValue">Genève</dd></div>
+            <div><dt data-i18n="props.education">Formation</dt><dd>Bachelor + CFC · GIT · 2025–2029</dd></div>
+            <div><dt data-i18n="props.specialty">Spécialité</dt><dd>AD Security · Pentest · Blue Team</dd></div>
+            <div><dt data-i18n="props.profile">Profil</dt><dd data-i18n="props.profileValue">Cybersécurité &amp; IT généraliste</dd></div>
+            <div><dt data-i18n="props.languages">Langues</dt><dd data-i18n="props.languagesValue">Portugais · Français · Anglais</dd></div>
+            <div><dt data-i18n="props.status">Statut</dt><dd><span class="status-dot" aria-hidden="true"></span> <span data-i18n="props.statusValue">En recherche d'alternance</span></dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ---------- PARCOURS (vue « détails » façon explorateur) ---------- -->
+    <section class="window reveal" id="parcours" aria-labelledby="career-title" data-window>
+      <div class="window__titlebar">
+        <svg class="icon icon--16" aria-hidden="true"><use href="#i-log"/></svg>
+        <span class="window__file" data-i18n="file.career">parcours.log</span>
+        <div class="window__controls">
+          <button class="window__btn" type="button" data-action="minimize" aria-expanded="true" aria-controls="parcours-body" aria-label="Réduire la fenêtre" data-i18n-attr="aria-label:win.minimize"><svg aria-hidden="true"><use href="#g-min"/></svg></button>
+          <button class="window__btn" type="button" data-action="maximize" aria-pressed="false" aria-label="Agrandir la fenêtre" data-i18n-attr="aria-label:win.maximize"><svg aria-hidden="true"><use href="#g-max"/></svg></button>
+          <button class="window__btn" type="button" data-action="close" aria-label="Fermer (la fenêtre reste dans la barre des tâches)" data-i18n-attr="aria-label:win.close"><svg aria-hidden="true"><use href="#g-close"/></svg></button>
+        </div>
+      </div>
+
+      <div class="window__body" id="parcours-body">
+        <h2 class="section-title" id="career-title" data-i18n="career.title">Parcours</h2>
+        <p class="section-intro" data-i18n="career.intro">Expériences et formation, de la plus récente à la plus ancienne.</p>
+
+        <h3 class="subhead" data-i18n="career.work">Expériences</h3>
+        <!-- En-tête de colonnes (décoratif, visible sur desktop) -->
+        <div class="explorer-head" aria-hidden="true">
+          <span data-i18n="career.colName">Nom</span><span data-i18n="career.colOrg">Organisation</span><span data-i18n="career.colDate">Période</span>
+        </div>
+        <ol class="log">
+          <!-- Cybersherpa -->
+          <li>
+            <details class="log__entry" open>
+              <summary class="log__summary">
+                <span class="log__role" data-i18n="job1.role">Stagiaire Cybersécurité &amp; Solutions d'Intelligence Artificielle</span>
+                <span class="log__org">Cybersherpa Sàrl</span>
+                <span class="log__date"><time datetime="2026-05">05.2026</time> – <time datetime="2026-06">06.2026</time></span>
+              </summary>
+              <div class="log__content">
+                <p class="log__meta" data-i18n="job1.meta">Stage à 50 %, en binôme · obtenu par sélection interne à l'école</p>
+                <ul class="bullets" data-i18n="job1.list">
+                  <li>Conception d'une pipeline multi-agents d'analyse de surface d'attaque : détection des points d'entrée exposés d'une organisation et rapport classé par criticité.</li>
+                  <li>Architecture modulaire au format ouvert SKILL.md, moteur Hermes Agent et console Hermes Workspace auto-hébergée.</li>
+                  <li>Cadre légal suisse intégré comme contrainte de conception (art. 143bis CP).</li>
+                  <li>Démonstration finale devant l'équipe.</li>
+                </ul>
+              </div>
+            </details>
+          </li>
+          <!-- HP Showroom -->
+          <li>
+            <details class="log__entry" open>
+              <summary class="log__summary">
+                <span class="log__role" data-i18n="job2.role">Stagiaire Technicien Infrastructure &amp; Réseau</span>
+                <span class="log__org">HP Showroom · Meyrin</span>
+                <span class="log__date"><time datetime="2026-04">04.2026</time> – <time datetime="2026-05">05.2026</time></span>
+              </summary>
+              <div class="log__content">
+                <ul class="bullets" data-i18n="job2.list">
+                  <li>Déploiement du pare-feu OPNsense et écriture des règles.</li>
+                  <li>Segmentation du réseau en 4 zones VLAN, toujours en service.</li>
+                  <li>Migration d'environ 150 VMs (plus de 30 To) de VMware ESXi vers Proxmox VE via QEMU, à chaud et en fenêtres de week-end.</li>
+                  <li>Stockage TrueNAS en iSCSI.</li>
+                  <li>Phase d'essais pour établir le chemin de conversion, puis checklist de migration et sauvegarde systématique avant chaque bascule : aucune perte de données.</li>
+                  <li>Documentation complète de l'architecture, du plan d'adressage et de la procédure de reprise.</li>
+                </ul>
+              </div>
+            </details>
+          </li>
+          <!-- CIO -->
+          <li>
+            <details class="log__entry" open>
+              <summary class="log__summary">
+                <span class="log__role" data-i18n="job3.role">Technicien support informatique</span>
+                <span class="log__org" data-i18n="job3.org">Comité International Olympique · mission via Stefanini · Lausanne</span>
+                <span class="log__date"><time datetime="2026-03">03.2026</time> – <time datetime="2026-04">04.2026</time></span>
+              </summary>
+              <div class="log__content">
+                <ul class="bullets" data-i18n="job3.list">
+                  <li>Seul au Tech Bar du siège (environ 600 collaborateurs) : 20 à 30 interventions par jour, en présentiel et à distance, en français et en anglais.</li>
+                  <li>Gestion des comptes et des accès Entra ID / Intune.</li>
+                  <li>Dépannage matériel et logiciel (BIOS, pilotes, réseau).</li>
+                  <li>Suivi et escalade des tickets sur ServiceNow.</li>
+                  <li>Détection d'une panne récurrente et prévention auprès des utilisateurs.</li>
+                  <li>Rappelé pour une nouvelle mission.</li>
+                </ul>
+              </div>
+            </details>
+          </li>
+          <!-- Protectas -->
+          <li>
+            <details class="log__entry" open>
+              <summary class="log__summary">
+                <span class="log__role" data-i18n="job4.role">Agent de sécurité auxiliaire</span>
+                <span class="log__org" data-i18n="job4.org">Protectas (Groupe Securitas) · Genève</span>
+                <span class="log__date"><time datetime="2022-03">03.2022</time> – <time datetime="2026-02">02.2026</time></span>
+              </summary>
+              <div class="log__content">
+                <p class="log__meta" data-i18n="job4.meta">Environ 100 h par mois, en parallèle des études</p>
+                <ul class="bullets" data-i18n="job4.list">
+                  <li>Surveillance de sites sensibles : joaillerie et horlogerie de luxe, banques, foyers d'hébergement.</li>
+                  <li>Événements : Watches &amp; Wonders (quatre années consécutives), Concours Hippique International.</li>
+                  <li>Gestion d'incidents désamorcés par la communication, rondes et protocoles incendie.</li>
+                  <li>Formations premiers secours et incendie.</li>
+                </ul>
+              </div>
+            </details>
+          </li>
+        </ol>
+
+        <h3 class="subhead" data-i18n="career.education">Formation</h3>
+        <ol class="log log--edu">
+          <li>
+            <div class="log__entry">
+              <div class="log__summary log__summary--static">
+                <span class="log__role" data-i18n="edu1.title">Bachelor en cybersécurité, cloud, systèmes et réseaux + CFC d'informaticien (exploitation et infrastructure)</span>
+                <span class="log__org">Geneva Institute of Technology · <span data-i18n="geneva">Genève</span></span>
+                <span class="log__date"><time datetime="2025">2025</time> – <time datetime="2029">2029</time></span>
+              </div>
+              <div class="log__content"><p class="log__meta" data-i18n="edu1.meta">En 2e année</p></div>
+            </div>
+          </li>
+          <li>
+            <div class="log__entry">
+              <div class="log__summary log__summary--static">
+                <span class="log__role" data-i18n="edu2.title">Certificat de culture générale, option communication</span>
+                <span class="log__org">ECGA · <span data-i18n="geneva">Genève</span></span>
+                <span class="log__date"><time datetime="2023">2023</time> – <time datetime="2025">2025</time></span>
+              </div>
+              <div class="log__content"><p class="log__meta" data-i18n="edu2.meta">Obtenu à temps partiel en travaillant</p></div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ---------- PROJETS (« programmes » filtrables) ---------- -->
+    <section class="window reveal" id="projets" aria-labelledby="projects-title" data-window>
+      <div class="window__titlebar">
+        <svg class="icon icon--16" aria-hidden="true"><use href="#i-folder"/></svg>
+        <span class="window__file" data-i18n="file.projects">programmes/</span>
+        <div class="window__controls">
+          <button class="window__btn" type="button" data-action="minimize" aria-expanded="true" aria-controls="projets-body" aria-label="Réduire la fenêtre" data-i18n-attr="aria-label:win.minimize"><svg aria-hidden="true"><use href="#g-min"/></svg></button>
+          <button class="window__btn" type="button" data-action="maximize" aria-pressed="false" aria-label="Agrandir la fenêtre" data-i18n-attr="aria-label:win.maximize"><svg aria-hidden="true"><use href="#g-max"/></svg></button>
+          <button class="window__btn" type="button" data-action="close" aria-label="Fermer (la fenêtre reste dans la barre des tâches)" data-i18n-attr="aria-label:win.close"><svg aria-hidden="true"><use href="#g-close"/></svg></button>
+        </div>
+      </div>
+
+      <div class="window__body" id="projets-body">
+        <h2 class="section-title" id="projects-title" data-i18n="projects.title">Projets</h2>
+        <p class="section-intro" data-i18n="projects.intro">Trois réalisations en infrastructure, sécurité et automatisation.</p>
+
+        <!-- Barre d'outils : filtres par statut (gérés par script.js) -->
+        <div class="toolbar" role="group" aria-label="Filtrer les projets par statut" data-i18n-attr="aria-label:projects.filterGroup">
+          <span class="toolbar__label" data-i18n="projects.filterLabel">Afficher :</span>
+          <button class="btn btn--tab" type="button" data-filter="all" aria-pressed="true" data-i18n="projects.all">Tous</button>
+          <button class="btn btn--tab" type="button" data-filter="done" aria-pressed="false" data-i18n="tag.done">Fait</button>
+          <button class="btn btn--tab" type="button" data-filter="wip" aria-pressed="false" data-i18n="tag.wip">En cours</button>
+        </div>
+        <!-- Annonce du nombre de résultats pour les lecteurs d'écran -->
+        <p class="sr-only" id="projects-status" aria-live="polite"></p>
+
+        <div class="programs" id="programs">
+
+          <!-- Projet 1 -->
+          <article class="program" data-status="done" aria-labelledby="p1-title">
+            <div class="program__head">
+              <svg class="icon icon--32 program__icon" aria-hidden="true"><use href="#i-shield"/></svg>
+              <div class="program__heading">
+                <h3 class="program__title" id="p1-title" data-i18n="p1.title">Pipeline multi-agents d'analyse de surface d'attaque</h3>
+                <span class="tag tag--done"><span class="tag__dot" aria-hidden="true"></span><span data-i18n="tag.done">Fait</span></span>
+              </div>
+            </div>
+            <p class="program__summary" data-i18n="p1.summary">Des agents IA qui repèrent les points d'entrée exposés d'une organisation et produisent un rapport classé par criticité.</p>
+            <details class="program__props">
+              <summary><span data-i18n="props.open">Propriétés</span></summary>
+              <ul class="bullets" data-i18n="p1.props">
+                <li>Réalisé en binôme pendant mon stage chez Cybersherpa.</li>
+                <li>Architecture modulaire au format ouvert SKILL.md, orchestrée par le moteur Hermes Agent et pilotée depuis une console Hermes Workspace auto-hébergée.</li>
+                <li>Cadre légal suisse (art. 143bis CP) intégré dès la conception comme garde-fou.</li>
+                <li>Présenté en démonstration finale devant l'équipe.</li>
+              </ul>
+            </details>
+            <ul class="stack-list" aria-label="Technologies" data-i18n-attr="aria-label:projects.stack">
+              <li>Hermes Agent</li><li>Hermes Workspace</li><li>SKILL.md</li><li>Python</li>
+            </ul>
+          </article>
+
+          <!-- Projet 2 -->
+          <article class="program" data-status="done" aria-labelledby="p2-title">
+            <div class="program__head">
+              <svg class="icon icon--32 program__icon" aria-hidden="true"><use href="#i-server"/></svg>
+              <div class="program__heading">
+                <h3 class="program__title" id="p2-title" data-i18n="p2.title">Infrastructure sécurisée &amp; migration de virtualisation</h3>
+                <span class="tag tag--done"><span class="tag__dot" aria-hidden="true"></span><span data-i18n="tag.done">Fait</span></span>
+              </div>
+            </div>
+            <p class="program__summary" data-i18n="p2.summary">Pare-feu, segmentation réseau et migration d'environ 150 VMs vers Proxmox VE, sans perte de données.</p>
+            <details class="program__props">
+              <summary><span data-i18n="props.open">Propriétés</span></summary>
+              <ul class="bullets" data-i18n="p2.props">
+                <li>Au HP Showroom : déploiement du pare-feu OPNsense et segmentation du réseau en 4 zones VLAN.</li>
+                <li>Migration d'environ 150 VMs (plus de 30 To) de VMware ESXi vers Proxmox VE via QEMU, à chaud et en fenêtres de week-end.</li>
+                <li>Phase d'essais en amont et sauvegarde avant chaque bascule.</li>
+                <li>Stockage TrueNAS en iSCSI.</li>
+                <li>Architecture, plan d'adressage et procédure de reprise documentés.</li>
+              </ul>
+            </details>
+            <ul class="stack-list" aria-label="Technologies" data-i18n-attr="aria-label:projects.stack">
+              <li>Proxmox VE</li><li>VMware ESXi</li><li>QEMU</li><li>OPNsense</li><li>TrueNAS</li><li>HPE ProLiant</li><li>VLAN</li>
+            </ul>
+          </article>
+
+          <!-- Projet 3 -->
+          <article class="program" data-status="wip" aria-labelledby="p3-title">
+            <div class="program__head">
+              <svg class="icon icon--32 program__icon" aria-hidden="true"><use href="#i-robot"/></svg>
+              <div class="program__heading">
+                <h3 class="program__title" id="p3-title" data-i18n="p3.title">Lab d'automatisation IT &amp; sécurité avec agents IA</h3>
+                <span class="tag tag--wip"><span class="tag__bar" aria-hidden="true"><i></i><i></i><i></i></span><span data-i18n="tag.wip">En cours</span></span>
+              </div>
+            </div>
+            <p class="program__summary" data-i18n="p3.summary">Un lab personnel pour appliquer les agents IA à l'infrastructure, la sécurité et l'automatisation.</p>
+            <details class="program__props">
+              <summary><span data-i18n="props.open">Propriétés</span></summary>
+              <ul class="bullets" data-i18n="p3.props">
+                <li>L'architecture et les scripts sont en place ; l'optimisation est en cours.</li>
+              </ul>
+            </details>
+            <ul class="stack-list" aria-label="Technologies" data-i18n-attr="aria-label:projects.stack">
+              <li>Python</li><li>PowerShell</li><li data-i18n="stack.agents">Agents IA</li>
+            </ul>
+          </article>
+
+          <!-- Projet secondaire (masqué par script.js tant qu'on n'a pas cliqué « Afficher plus ») -->
+          <article class="program program--extra" id="program-utils" data-status="done" data-extra aria-labelledby="p4-title">
+            <div class="program__head">
+              <svg class="icon icon--32 program__icon" aria-hidden="true"><use href="#i-floppy"/></svg>
+              <div class="program__heading">
+                <h3 class="program__title" id="p4-title" data-i18n="p4.title">Utilitaires système personnels</h3>
+                <span class="tag tag--done"><span class="tag__dot" aria-hidden="true"></span><span data-i18n="tag.done">Fait</span></span>
+              </div>
+            </div>
+            <p class="program__summary" data-i18n="p4.summary">Scripts de personnalisation Windows et Linux : fond d'écran, écran de démarrage, réglages système.</p>
+            <ul class="stack-list" aria-label="Technologies" data-i18n-attr="aria-label:projects.stack">
+              <li>Python</li><li>PowerShell</li><li>Bash</li>
+            </ul>
+          </article>
+        </div>
+
+        <p class="programs__empty" id="programs-empty" hidden data-i18n="projects.empty">Aucun programme ne correspond à ce filtre.</p>
+        <div class="programs__more">
+          <button class="btn" type="button" id="programs-more" aria-expanded="false" aria-controls="program-utils" hidden>
+            <span data-i18n="projects.more">Afficher plus de programmes (1)</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- COMPÉTENCES (« panneau de configuration » + terminal) ---------- -->
+    <section class="window reveal" id="competences" aria-labelledby="skills-title" data-window>
+      <div class="window__titlebar">
+        <svg class="icon icon--16" aria-hidden="true"><use href="#i-panel"/></svg>
+        <span class="window__file">config.cpl</span>
+        <div class="window__controls">
+          <button class="window__btn" type="button" data-action="minimize" aria-expanded="true" aria-controls="competences-body" aria-label="Réduire la fenêtre" data-i18n-attr="aria-label:win.minimize"><svg aria-hidden="true"><use href="#g-min"/></svg></button>
+          <button class="window__btn" type="button" data-action="maximize" aria-pressed="false" aria-label="Agrandir la fenêtre" data-i18n-attr="aria-label:win.maximize"><svg aria-hidden="true"><use href="#g-max"/></svg></button>
+          <button class="window__btn" type="button" data-action="close" aria-label="Fermer (la fenêtre reste dans la barre des tâches)" data-i18n-attr="aria-label:win.close"><svg aria-hidden="true"><use href="#g-close"/></svg></button>
+        </div>
+      </div>
+
+      <div class="window__body" id="competences-body">
+        <h2 class="section-title" id="skills-title" data-i18n="skills.title">Compétences</h2>
+
+        <div class="skills">
+          <!-- Terminal cyber : spécialité principale, mise en avant en premier -->
+          <div class="skills__cyber">
+            <h3 class="skill-group__title">
+              <svg class="icon icon--24" aria-hidden="true"><use href="#i-shield"/></svg>
+              <span data-i18n="skills.cyber">Cybersécurité</span>
+            </h3>
+            <div class="terminal" id="terminal" role="region" aria-label="Terminal : outils et domaines en cybersécurité" data-i18n-attr="aria-label:skills.terminalLabel">
+              <div class="terminal__bar" aria-hidden="true">
+                <svg class="icon icon--16"><use href="#i-terminal"/></svg>
+                <span>bruno@ba-os — bash</span>
+              </div>
+              <!-- Le texte réel est dans le HTML : lisible sans JS et par les lecteurs d'écran -->
+              <div class="terminal__screen">
+                <p class="t-line" style="--i: 0"><span class="t-prompt">bruno@ba-os:~$</span> whoami</p>
+                <p class="t-line t-out" style="--i: 1" data-i18n="term.whoami">Bruno Alves — cybersécurité · AD Security · Pentest · Blue Team</p>
+                <p class="t-line" style="--i: 2"><span class="t-prompt">bruno@ba-os:~$</span> <span data-i18n="term.ls">ls ./outils</span></p>
+                <p class="t-line t-out" style="--i: 3">kali-linux&nbsp;&nbsp;nmap&nbsp;&nbsp;shodan&nbsp;&nbsp;wireshark&nbsp;&nbsp;bloodhound</p>
+                <p class="t-line" style="--i: 4"><span class="t-prompt">bruno@ba-os:~$</span> cat focus.txt</p>
+                <p class="t-line t-out" style="--i: 5" data-i18n="term.focus">Durcissement AD · Tiering Model · Analyse de surface d'attaque</p>
+                <p class="t-line" style="--i: 6"><span class="t-prompt">bruno@ba-os:~$</span> <span class="caret" aria-hidden="true"></span></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Catégories façon panneau de configuration -->
+          <div class="skill-groups">
+            <article class="skill-group">
+              <h3 class="skill-group__title">
+                <svg class="icon icon--24" aria-hidden="true"><use href="#i-server"/></svg>
+                <span data-i18n="skills.infra">Infrastructure &amp; réseaux</span>
+              </h3>
+              <ul class="chips">
+                <li>Windows Server</li><li>Active Directory</li><li>DNS</li><li>DHCP</li><li>GPO</li><li>Proxmox VE</li><li>VMware ESXi</li><li>QEMU</li><li>TrueNAS</li><li>OPNsense</li><li>VLAN</li><li>TCP/IP</li><li>Cisco</li>
+              </ul>
+            </article>
+            <article class="skill-group">
+              <h3 class="skill-group__title">
+                <svg class="icon icon--24" aria-hidden="true"><use href="#i-computer"/></svg>
+                <span data-i18n="skills.support">Support &amp; cloud</span>
+              </h3>
+              <ul class="chips">
+                <li>Microsoft 365</li><li>Entra ID</li><li>Intune</li><li>ServiceNow</li>
+              </ul>
+            </article>
+            <article class="skill-group">
+              <h3 class="skill-group__title">
+                <svg class="icon icon--24" aria-hidden="true"><use href="#i-robot"/></svg>
+                <span data-i18n="skills.ai">IA &amp; automatisation</span>
+              </h3>
+              <ul class="chips">
+                <li data-i18n="stack.agents">Agents IA</li><li>Hermes Agent</li><li>SKILL.md</li>
+              </ul>
+            </article>
+            <article class="skill-group">
+              <h3 class="skill-group__title">
+                <svg class="icon icon--24" aria-hidden="true"><use href="#i-terminal"/></svg>
+                <span data-i18n="skills.dev">Dev &amp; scripting</span>
+              </h3>
+              <ul class="chips">
+                <li>Python</li><li>PowerShell</li><li>Bash</li><li>SQL</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+
+        <!-- Langues : niveaux en toutes lettres + barre segmentée décorative (3 niveaux, aucun pourcentage) -->
+        <h3 class="subhead" data-i18n="skills.languages">Langues</h3>
+        <ul class="langs">
+          <li class="lang" data-level="3"><span class="lang__name" data-i18n="lang.pt">Portugais</span><span class="lang__meter" aria-hidden="true"><i></i><i></i><i></i></span><span class="lang__level" data-i18n="level.native">Langue maternelle</span></li>
+          <li class="lang" data-level="2"><span class="lang__name" data-i18n="lang.fr">Français</span><span class="lang__meter" aria-hidden="true"><i></i><i></i><i></i></span><span class="lang__level" data-i18n="level.fluent">Courant</span></li>
+          <li class="lang" data-level="2"><span class="lang__name" data-i18n="lang.en">Anglais</span><span class="lang__meter" aria-hidden="true"><i></i><i></i><i></i></span><span class="lang__level" data-i18n="level.fluent">Courant</span></li>
+          <li class="lang" data-level="1"><span class="lang__name" data-i18n="lang.es">Espagnol</span><span class="lang__meter" aria-hidden="true"><i></i><i></i><i></i></span><span class="lang__level" data-i18n="level.basic">Notions</span></li>
+          <li class="lang" data-level="1"><span class="lang__name" data-i18n="lang.it">Italien</span><span class="lang__meter" aria-hidden="true"><i></i><i></i><i></i></span><span class="lang__level" data-i18n="level.basic">Notions</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ---------- ENGAGEMENT & INTÉRÊTS ---------- -->
+    <section class="window reveal" id="engagement" aria-labelledby="engagement-title" data-window>
+      <div class="window__titlebar">
+        <svg class="icon icon--16" aria-hidden="true"><use href="#i-star"/></svg>
+        <span class="window__file" data-i18n="file.engagement">favoris/</span>
+        <div class="window__controls">
+          <button class="window__btn" type="button" data-action="minimize" aria-expanded="true" aria-controls="engagement-body" aria-label="Réduire la fenêtre" data-i18n-attr="aria-label:win.minimize"><svg aria-hidden="true"><use href="#g-min"/></svg></button>
+          <button class="window__btn" type="button" data-action="maximize" aria-pressed="false" aria-label="Agrandir la fenêtre" data-i18n-attr="aria-label:win.maximize"><svg aria-hidden="true"><use href="#g-max"/></svg></button>
+          <button class="window__btn" type="button" data-action="close" aria-label="Fermer (la fenêtre reste dans la barre des tâches)" data-i18n-attr="aria-label:win.close"><svg aria-hidden="true"><use href="#g-close"/></svg></button>
+        </div>
+      </div>
+
+      <div class="window__body engagement" id="engagement-body">
+        <h2 class="section-title" id="engagement-title" data-i18n="engagement.title">Engagement &amp; intérêts</h2>
+
+        <div class="engagement__grid">
+          <article class="panel">
+            <h3 class="panel__title" data-i18n="engagement.role">Bénévole porte-parole</h3>
+            <p class="panel__org">IYSMUN · <span data-i18n="geneva">Genève</span> · <time datetime="2018-06">06.2018</time> – <time datetime="2020-02">02.2020</time></p>
+            <p class="panel__meta" data-i18n="engagement.org">International Youth and Students Movement for the United Nations, association accréditée auprès de l'ONU</p>
+            <ul class="bullets" data-i18n="engagement.list">
+              <li>Prises de parole lors de dizaines d'événements, sur trois sessions.</li>
+              <li>Porte-parole à plusieurs reprises dans la Salle XX du Palais des Nations, devant des délégations, des ONG et la direction de l'ONU.</li>
+              <li>Sujets : jeunesse, conscience climatique, impact des catastrophes sur les jeunes.</li>
+            </ul>
+          </article>
+
+          <article class="panel">
+            <h3 class="panel__title" data-i18n="engagement.offscreen">En dehors de l'écran</h3>
+            <ul class="interests">
+              <li><svg class="icon-sparkle" aria-hidden="true"><use href="#i-sparkle"/></svg><span data-i18n="interest.1">Randonnée, escalade &amp; via ferrata</span></li>
+              <li><svg class="icon-sparkle" aria-hidden="true"><use href="#i-sparkle"/></svg><span data-i18n="interest.2">Sports d'équipe &amp; sports de combat</span></li>
+              <li><svg class="icon-sparkle" aria-hidden="true"><use href="#i-sparkle"/></svg><span data-i18n="interest.3">Mécanique &amp; sports automobiles</span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- CONTACT (boîte de dialogue) ---------- -->
+    <section class="window window--dialog reveal" id="contact" aria-labelledby="contact-title" data-window>
+      <div class="window__titlebar">
+        <svg class="icon icon--16" aria-hidden="true"><use href="#i-mail"/></svg>
+        <span class="window__file" data-i18n="file.contact">Nouveau message</span>
+        <div class="window__controls">
+          <button class="window__btn" type="button" data-action="close" aria-label="Fermer (la fenêtre reste dans la barre des tâches)" data-i18n-attr="aria-label:win.close"><svg aria-hidden="true"><use href="#g-close"/></svg></button>
+        </div>
+      </div>
+
+      <div class="window__body dialog" id="contact-body">
+        <div class="dialog__row">
+          <svg class="icon icon--48 dialog__icon" aria-hidden="true"><use href="#i-info"/></svg>
+          <div class="dialog__text">
+            <h2 class="section-title" id="contact-title">Contact</h2>
+            <p data-i18n="contact.text">Vous cherchez un alternant, un stagiaire ou un renfort en cybersécurité ou en IT à Genève ? Écrivez-moi, je serai ravi d'échanger.</p>
+            <p class="dialog__email">
+              <a href="mailto:bruno.alves@git.swiss">bruno.alves@git.swiss</a>
+              <button class="btn btn--small" type="button" data-copy="bruno.alves@git.swiss" data-i18n="contact.copy">Copier</button>
+            </p>
+          </div>
+        </div>
+        <div class="dialog__actions">
+          <a class="btn btn--primary" href="mailto:bruno.alves@git.swiss">
+            <svg class="icon icon--16" aria-hidden="true"><use href="#i-mail"/></svg>
+            <span data-i18n="contact.email">Écrire un email</span>
+          </a>
+          <a class="btn" href="https://github.com/burnBA" target="_blank" rel="noopener noreferrer">
+            GitHub <span class="sr-only" data-i18n="newTab">(nouvel onglet)</span>
+          </a>
+          <a class="btn" href="https://www.linkedin.com/in/bruno-alves-256067211/" target="_blank" rel="noopener noreferrer">
+            LinkedIn <span class="sr-only" data-i18n="newTab">(nouvel onglet)</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ PIED DE PAGE ============ -->
+  <footer class="site-footer layout">
+    <div class="site-footer__inner">
+      <svg class="icon icon--24" aria-hidden="true"><use href="#i-monogram"/></svg>
+      <p>© <span id="year">2026</span> Bruno Alves · <span data-i18n="geneva">Genève</span> · <span data-i18n="footer.made">Conçu et codé à la main en HTML, CSS et JavaScript.</span></p>
+      <a class="btn btn--small" href="#top" data-i18n="footer.top">Retour en haut</a>
+    </div>
+  </footer>
+
+  <!-- ============ BARRE DES TÂCHES (navigation principale, fixe en bas) ============ -->
+  <nav class="taskbar" aria-label="Barre des tâches" data-i18n-attr="aria-label:nav.taskbar">
+    <!-- Bouton « BA » : ouvre le menu (= menu burger sur mobile) -->
+    <button class="taskbar__start" id="start-button" type="button" aria-expanded="false" aria-controls="start-menu">
+      <svg class="icon icon--24" aria-hidden="true"><use href="#i-monogram"/></svg>
+      <span class="taskbar__start-label">Menu</span>
+    </button>
+
+    <!-- Un bouton par fenêtre ; surligné selon la section visible (scroll spy) -->
+    <ul class="taskbar__tasks">
+      <li><a class="task" href="#accueil" data-task="accueil"><svg class="icon icon--16" aria-hidden="true"><use href="#i-computer"/></svg><span data-i18n="nav.home">Accueil</span></a></li>
+      <li><a class="task" href="#about" data-task="about"><svg class="icon icon--16" aria-hidden="true"><use href="#i-notepad"/></svg><span data-i18n="nav.about">À propos</span></a></li>
+      <li><a class="task" href="#parcours" data-task="parcours"><svg class="icon icon--16" aria-hidden="true"><use href="#i-log"/></svg><span data-i18n="nav.career">Parcours</span></a></li>
+      <li><a class="task" href="#projets" data-task="projets"><svg class="icon icon--16" aria-hidden="true"><use href="#i-folder"/></svg><span data-i18n="nav.projects">Projets</span></a></li>
+      <li><a class="task" href="#competences" data-task="competences"><svg class="icon icon--16" aria-hidden="true"><use href="#i-panel"/></svg><span data-i18n="nav.skills">Compétences</span></a></li>
+      <li><a class="task" href="#engagement" data-task="engagement"><svg class="icon icon--16" aria-hidden="true"><use href="#i-star"/></svg><span data-i18n="nav.engagement">Engagement</span></a></li>
+      <li><a class="task" href="#contact" data-task="contact"><svg class="icon icon--16" aria-hidden="true"><use href="#i-mail"/></svg><span data-i18n="nav.contact">Contact</span></a></li>
+    </ul>
+
+    <!-- Zone de notification : langue, thème, paramètres, horloge de Genève -->
+    <div class="taskbar__tray">
+      <button class="tray-btn tray-btn--text" id="lang-toggle" type="button" aria-label="Switch to English" lang="en">EN</button>
+      <button class="tray-btn" id="theme-toggle" type="button" aria-label="Passer au thème sombre">
+        <svg class="icon icon--16" aria-hidden="true"><use href="#i-contrast"/></svg>
+      </button>
+      <button class="tray-btn" id="settings-open" type="button" aria-haspopup="dialog" aria-label="Paramètres d'affichage" data-i18n-attr="aria-label:settings.title">
+        <svg class="icon icon--16" aria-hidden="true"><use href="#i-computer"/></svg>
+      </button>
+      <time class="tray-clock" id="clock" aria-label="Heure à Genève" data-i18n-attr="aria-label:clock">--:--</time>
+    </div>
+  </nav>
+
+  <!-- ============ MENU « BA » (façon menu Démarrer) ============ -->
+  <div class="start-menu" id="start-menu" hidden>
+    <div class="start-menu__band" aria-hidden="true"><span>BA·OS <b>2K</b></span></div>
+    <div class="start-menu__inner">
+      <div class="start-menu__user">
+        <svg class="icon icon--32" aria-hidden="true"><use href="#i-monogram"/></svg>
+        <div>
+          <strong>Bruno Alves</strong>
+          <span data-i18n="start.role">Cybersécurité · Systèmes &amp; réseaux</span>
+        </div>
+      </div>
+      <div class="start-menu__cols">
+        <nav class="start-menu__nav" aria-label="Sections" data-i18n-attr="aria-label:nav.sections">
+          <ul>
+            <li><a href="#accueil" data-task="accueil"><svg class="icon icon--24" aria-hidden="true"><use href="#i-computer"/></svg><span data-i18n="nav.home">Accueil</span></a></li>
+            <li><a href="#about" data-task="about"><svg class="icon icon--24" aria-hidden="true"><use href="#i-notepad"/></svg><span data-i18n="nav.about">À propos</span></a></li>
+            <li><a href="#parcours" data-task="parcours"><svg class="icon icon--24" aria-hidden="true"><use href="#i-log"/></svg><span data-i18n="nav.career">Parcours</span></a></li>
+            <li><a href="#projets" data-task="projets"><svg class="icon icon--24" aria-hidden="true"><use href="#i-folder"/></svg><span data-i18n="nav.projects">Projets</span></a></li>
+            <li><a href="#competences" data-task="competences"><svg class="icon icon--24" aria-hidden="true"><use href="#i-panel"/></svg><span data-i18n="nav.skills">Compétences</span></a></li>
+            <li><a href="#engagement" data-task="engagement"><svg class="icon icon--24" aria-hidden="true"><use href="#i-star"/></svg><span data-i18n="nav.engagement">Engagement</span></a></li>
+            <li><a href="#contact" data-task="contact"><svg class="icon icon--24" aria-hidden="true"><use href="#i-mail"/></svg><span data-i18n="nav.contact">Contact</span></a></li>
+          </ul>
+        </nav>
+        <div class="start-menu__side">
+          <p class="start-menu__heading" data-i18n="start.links">Liens rapides</p>
+          <ul>
+            <li><a href="mailto:bruno.alves@git.swiss">Email</a></li>
+            <li><a href="https://github.com/burnBA" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only" data-i18n="newTab">(nouvel onglet)</span></a></li>
+            <li><a href="https://www.linkedin.com/in/bruno-alves-256067211/" target="_blank" rel="noopener noreferrer">LinkedIn <span class="sr-only" data-i18n="newTab">(nouvel onglet)</span></a></li>
+          </ul>
+          <button class="btn btn--small start-menu__settings" type="button" data-open-settings data-i18n="settings.title">Paramètres d'affichage</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ BOÎTE DE DIALOGUE « PARAMÈTRES D'AFFICHAGE » ============ -->
+  <dialog class="window window--dialog settings" id="settings-dialog" aria-labelledby="settings-title">
+    <form method="dialog">
+      <div class="window__titlebar">
+        <svg class="icon icon--16" aria-hidden="true"><use href="#i-computer"/></svg>
+        <span class="window__file" id="settings-title" data-i18n="settings.title">Paramètres d'affichage</span>
+        <div class="window__controls">
+          <button class="window__btn" type="submit" value="cancel" aria-label="Fermer" data-i18n-attr="aria-label:settings.close"><svg aria-hidden="true"><use href="#g-close"/></svg></button>
+        </div>
+      </div>
+      <div class="window__body settings__body">
+        <fieldset class="settings__group">
+          <legend data-i18n="settings.theme">Thème</legend>
+          <label class="option"><input type="radio" name="theme" value="auto"><span class="swatch swatch--auto" aria-hidden="true"></span><span data-i18n="settings.auto">Automatique (système)</span></label>
+          <label class="option"><input type="radio" name="theme" value="light"><span class="swatch swatch--light" aria-hidden="true"></span><span data-i18n="settings.light">Lavande (clair)</span></label>
+          <label class="option"><input type="radio" name="theme" value="dark"><span class="swatch swatch--dark" aria-hidden="true"></span><span data-i18n="settings.dark">Minuit (sombre)</span></label>
+        </fieldset>
+        <fieldset class="settings__group">
+          <legend data-i18n="settings.effects">Effets</legend>
+          <label class="option"><input type="checkbox" name="crt" value="on"><span data-i18n="settings.crt">Effets CRT dans le terminal (lignes de balayage)</span></label>
+        </fieldset>
+        <fieldset class="settings__group">
+          <legend data-i18n="settings.language">Langue</legend>
+          <label class="option"><input type="radio" name="lang" value="fr"><span lang="fr">Français</span></label>
+          <label class="option"><input type="radio" name="lang" value="en"><span lang="en">English</span></label>
+        </fieldset>
+        <div class="dialog__actions">
+          <button class="btn btn--primary" type="submit" value="ok">OK</button>
+          <button class="btn" type="submit" value="cancel" data-i18n="settings.cancel">Annuler</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Notifications courtes (« Adresse copiée », etc.) -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
