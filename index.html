@@ -4,509 +4,428 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bruno Alves — Cybersécurité, Systèmes &amp; Réseaux</title>
-  <meta name="description" content="Bruno Alves — étudiant Bachelor Cybersécurité, Systèmes & Réseaux au GIT (Genève). Infrastructure, durcissement Active Directory, pentest et Blue Team. En recherche d'alternance à Genève.">
-  <meta name="theme-color" content="#07060b">
+  <meta name="description" content="Bruno Alves, étudiant Bachelor Cybersécurité, Systèmes &amp; Réseaux au GIT (Genève). Sécurité Active Directory, pentest, Blue Team, infrastructure et durcissement. Disponible pour une alternance à Genève.">
+  <meta name="author" content="Bruno Alves">
+  <meta name="theme-color" content="#08070d">
   <meta name="color-scheme" content="dark">
+  <link rel="canonical" href="https://burnba.github.io/portfolio/">
 
-  <!-- Open Graph : aperçu lors du partage du lien (LinkedIn, Teams, etc.) -->
+  <!-- Open Graph / aperçu de partage (LinkedIn, Teams, messageries…) -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Bruno Alves — Cybersécurité, Systèmes & Réseaux">
-  <meta property="og:description" content="Infrastructure & durcissement · AD Security · Pentest · Blue Team. En recherche d'alternance à Genève.">
+  <meta property="og:url" content="https://burnba.github.io/portfolio/">
+  <meta property="og:site_name" content="Bruno Alves">
+  <meta property="og:locale" content="fr_CH">
+  <meta property="og:locale:alternate" content="en_GB">
+  <meta property="og:title" content="Bruno Alves — Cybersécurité, Systèmes &amp; Réseaux">
+  <meta property="og:description" content="Étudiant Bachelor au GIT · AD Security, pentest, Blue Team, infrastructure &amp; durcissement. Disponible pour une alternance à Genève.">
+  <meta property="og:image" content="https://burnba.github.io/portfolio/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Bruno Alves — Cybersécurité, Systèmes &amp; Réseaux">
+  <meta name="twitter:card" content="summary_large_image">
 
-  <!-- Favicon : le sigil BA (SVG, net à toutes les tailles) -->
-  <link rel="icon" href="assets/sigil.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
-  <!-- Polices auto-hébergées (aucune requête vers un service tiers) -->
-  <link rel="preload" href="assets/fonts/unbounded.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Polices Google Fonts (3 au total) :
+       Unbounded (titres, Y2K), Instrument Sans (texte), JetBrains Mono (détails techniques) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;700;800&display=swap">
+
   <link rel="stylesheet" href="style.css">
 
-  <!-- Avant tout rendu : signale que JS est actif et applique la langue mémorisée
-       pour éviter un « flash » de la mauvaise langue ou de l'intro. -->
+  <!-- Avant le premier rendu : JS actif + langue et préférence d'animation mémorisées
+       (évite un « flash » de la mauvaise langue). Accès au stockage protégé par try/catch. -->
   <script>
     document.documentElement.classList.replace('no-js', 'js');
     try {
       if (localStorage.getItem('ba-lang') === 'en') document.documentElement.lang = 'en';
-      if (sessionStorage.getItem('ba-intro-seen')) document.documentElement.classList.add('intro-seen');
-    } catch (e) { /* stockage indisponible : on garde les valeurs par défaut */ }
+    } catch (e) { /* stockage indisponible : valeurs par défaut */ }
+    // Animations : choix explicite mémorisé, sinon préférence système (prefers-reduced-motion)
+    (function () {
+      var pref = null;
+      try { pref = localStorage.getItem('ba-motion'); } catch (e) {}
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (pref === 'off' || (pref !== 'on' && reduce)) document.documentElement.classList.add('motion-off');
+    })();
   </script>
+  <script src="content.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 
 <body>
   <!-- =====================================================================
-       SPRITE SVG : le sigil est défini une seule fois puis réutilisé
-       (header, hero, intro, footer) via <use href="#sigil">.
+       SPRITE D'ICÔNES — un seul langage visuel : 24 × 24, trait 1.6, arrondi.
+       Utilisation : <svg class="icon"><use href="#i-nom"/></svg>
        ===================================================================== -->
   <svg class="sprite" aria-hidden="true" focusable="false">
-    <defs>
-      <!-- Dégradé « chrome liquide » partagé par tous les tracés du sigil -->
-      <linearGradient id="g-chrome" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="200" y2="200">
-        <stop offset="0" stop-color="#ffffff"/>
-        <stop offset=".25" stop-color="#8f8ba3"/>
-        <stop offset=".45" stop-color="#f6f4ff"/>
-        <stop offset=".62" stop-color="#5f5a74"/>
-        <stop offset=".8" stop-color="#e4dbff"/>
-        <stop offset="1" stop-color="#a98bff"/>
-      </linearGradient>
-      <symbol id="sigil" viewBox="0 0 200 200">
-        <g fill="none" stroke="url(#g-chrome)" stroke-linecap="round" stroke-linejoin="round">
-          <!-- Anneaux : cercle extérieur + couronne graduée (cadran / horloge réseau) -->
-          <g class="sigil-ring">
-            <circle cx="100" cy="100" r="92" stroke-width="2"/>
-            <circle cx="100" cy="100" r="83" stroke-width="1" stroke-dasharray="1.5 7" opacity=".8"/>
-          </g>
-          <!-- Géométrie discrète : losange inscrit -->
-          <path class="sigil-geo" d="M100 14 L186 100 L100 186 L14 100 Z" stroke-width=".9" opacity=".45"/>
-          <!-- Lettres : A (triangle) + B (partage la hampe centrale) -->
-          <g class="sigil-letters" stroke-width="7">
-            <path class="draw" d="M54 154 L100 42 L146 154"/>
-            <path class="draw" d="M100 42 V154"/>
-            <path class="draw" d="M100 70 Q130 70 130 89 Q130 106 100 106 Q140 106 140 129.5 Q140 154 100 154"/>
-            <path class="draw" d="M72 122 H100"/>
-          </g>
-        </g>
-        <!-- Nœuds : sommets du sigil = hôtes d'une topologie -->
-        <g class="sigil-nodes" fill="url(#g-chrome)">
-          <circle cx="54" cy="154" r="4.5"/>
-          <circle cx="146" cy="154" r="4.5"/>
-          <circle cx="100" cy="8" r="3"/>
-          <circle cx="100" cy="192" r="3"/>
-          <circle cx="8" cy="100" r="3"/>
-          <circle cx="192" cy="100" r="3"/>
-        </g>
-        <circle class="sigil-core" cx="100" cy="42" r="7" fill="#c6ff3d"/>
-      </symbol>
-    </defs>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3Z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.9 7.5-9.5V6L12 3Z"/><path d="m8.8 12 2.3 2.3 4.3-4.6"/></symbol>
+    <symbol id="i-switch" viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="7" rx="2"/><path d="M7 12.5h.01M10.5 12.5h.01M14 12.5h.01M17.5 12.5h.01M7 9V6M12 9V4M17 9V6M7 16v3M17 16v3"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="16.5" cy="9.5" r="2.5"/><path d="M15.5 14.2c2.4-.3 4.4 1.2 5 4.3"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 10h4v4h-4zM9.5 3.5V7M14.5 3.5V7M9.5 17v3.5M14.5 17v3.5M3.5 9.5H7M3.5 14.5H7M17 9.5h3.5M17 14.5h3.5"/></symbol>
+    <symbol id="i-printer" viewBox="0 0 24 24"><path d="M7 9V4h10v5"/><rect x="3.5" y="9" width="17" height="7.5" rx="2"/><path d="M7 14h10v6H7z"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="7" rx="2"/><rect x="3.5" y="13" width="17" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h6M11 16.5h6"/></symbol>
+    <symbol id="i-disk" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.3a10.5 10.5 0 0 0 6.2 6.2l1.3-2 4 1.5v3a2 2 0 0 1-2.2 2C11 18.9 5.1 13 4.5 5.7a2 2 0 0 1 2-2.2Z"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.5 1.6A3.8 3.8 0 0 1 17.5 18.5H7Z"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="2.5"/><path d="m7 9.5 3 2.5-3 2.5M12.5 15h4.5"/></symbol>
+    <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12 18.4 5.6"/><circle cx="12" cy="12" r="1" /></symbol>
+    <symbol id="i-mountain" viewBox="0 0 24 24"><path d="m3 19 6.5-11 4 6.5 2-3L21 19H3Z"/><path d="m8 10.5 1.5 1.3 1.6-1.4"/></symbol>
+    <symbol id="i-fist" viewBox="0 0 24 24"><path d="M7 10V7.5a1.5 1.5 0 0 1 3 0V10m0-3a1.5 1.5 0 0 1 3 0v3m0-2.5a1.5 1.5 0 0 1 3 0V10m0-1a1.5 1.5 0 0 1 3 0v4.5c0 4-2.7 6.5-6.5 6.5H11c-3.3 0-5.5-2.3-5.5-5.5V12A2 2 0 0 1 7 10h4.5a1.8 1.8 0 0 1 0 3.6H9"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.6M12 18.6v2.6M21.2 12h-2.6M5.4 12H2.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8M18.5 18.5l-1.8-1.8M7.3 7.3 5.5 5.5"/><circle cx="12" cy="12" r="6.6"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.8 6.5 8.2 6.2 8.2-6.2"/></symbol>
+    <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6.5" cy="5.5" r="2"/><circle cx="6.5" cy="18.5" r="2"/><circle cx="17.5" cy="7.5" r="2"/><path d="M6.5 7.5v9M17.5 9.5c0 4.5-6 3.5-10 7"/></symbol>
+    <symbol id="i-network" viewBox="0 0 24 24"><rect x="3" y="3.5" width="18" height="17" rx="3"/><path d="M7.5 10.5v6M7.5 7.5h.01M11 16.5v-6m0 2.5c0-1.7 1-2.7 2.5-2.7s2.5 1 2.5 2.7v3.5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="12" height="12" rx="2.5"/><path d="M15.5 8.5V5.8a2.3 2.3 0 0 0-2.3-2.3H5.8a2.3 2.3 0 0 0-2.3 2.3v7.4a2.3 2.3 0 0 0 2.3 2.3h2.7"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></symbol>
+    <symbol id="i-command" viewBox="0 0 24 24"><path d="M9 9h6v6H9zM9 9V6.5A2.5 2.5 0 1 0 6.5 9H9Zm6 0V6.5A2.5 2.5 0 1 1 17.5 9H15Zm0 6v2.5a2.5 2.5 0 1 0 2.5-2.5H15Zm-6 0v2.5A2.5 2.5 0 1 1 6.5 15H9Z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12.5h18"/></symbol>
+    <symbol id="i-motion" viewBox="0 0 24 24"><path d="M3 12h3l2.5-6 4 12 3-9 1.5 3H21"/></symbol>
+    <symbol id="i-language" viewBox="0 0 24 24"><path d="M4 5h8M8 3v2m2.5 0c-.8 4-3.4 7.2-6.5 8.5M6 8.5c.9 2 2.6 3.6 4.5 4.5M12.5 21l4-10 4 10M14 17.5h5"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 2.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5Z"/></symbol>
   </svg>
 
-  <!-- =====================================================================
-       INTRO : séquence de « boot » (une fois par session, passable,
-       désactivée si l'utilisateur préfère réduire les animations)
-       ===================================================================== -->
-  <div class="intro" id="intro" aria-hidden="true">
-    <svg class="intro-sigil"><use href="#sigil"/></svg>
-    <pre class="intro-log" id="intro-log"></pre>
-    <p class="intro-skip" data-i18n="intro.skip">Cliquez ou appuyez sur une touche pour passer</p>
-  </div>
+  <a class="skip-link" href="#main" data-i18n="skip">Aller au contenu</a>
 
-  <a class="skip-link" href="#main" data-i18n="a11y.skip">Aller au contenu</a>
-
-  <!-- Barre de progression de lecture -->
-  <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+  <!-- Barre de progression de lecture (décorative) -->
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
   <!-- =====================================================================
-       EN-TÊTE
+       EN-TÊTE — mot-symbole typographique (pas de logo), navigation,
+       palette de commandes et sélecteur de langue.
        ===================================================================== -->
-  <header class="site-header" id="top">
-    <div class="container header-inner">
-      <a class="brand" href="#top" aria-label="Bruno Alves — accueil" data-i18n-aria="a11y.home">
-        <svg class="brand-sigil" aria-hidden="true"><use href="#sigil"/></svg>
-        <span class="brand-name">Bruno Alves</span>
+  <header class="site-header">
+    <div class="header-inner container">
+      <a class="wordmark" href="#hero" aria-label="Bruno Alves — accueil">
+        <span class="wordmark-name">Bruno Alves</span>
+        <span class="wordmark-tag mono" aria-hidden="true">cyber/sys/net</span>
       </a>
 
-      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav"
-              aria-label="Ouvrir le menu" data-i18n-aria="a11y.menu">
-        <span></span><span></span>
-      </button>
-
-      <nav class="site-nav" id="site-nav" aria-label="Navigation principale" data-i18n-aria="a11y.nav">
+      <nav class="site-nav" id="site-nav" aria-label="Navigation principale" data-i18n-attr="aria-label:nav.label">
         <ul>
           <li><a href="#about" data-i18n="nav.about">À propos</a></li>
-          <li><a href="#path" data-i18n="nav.path">Parcours</a></li>
+          <li><a href="#experience" data-i18n="nav.experience">Parcours</a></li>
           <li><a href="#projects" data-i18n="nav.projects">Projets</a></li>
           <li><a href="#skills" data-i18n="nav.skills">Compétences</a></li>
+          <li><a href="#languages" data-i18n="nav.languages">Langues</a></li>
           <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
         </ul>
-        <div class="nav-tools">
-          <!-- Sélecteur de langue : FR par défaut, choix mémorisé -->
-          <div class="lang-switch" role="group" aria-label="Langue / Language">
-            <button type="button" data-lang="fr" aria-pressed="true" lang="fr">FR</button>
-            <button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>
-          </div>
-          <button type="button" class="term-btn" id="term-open" aria-haspopup="dialog">
-            <span aria-hidden="true">&gt;_</span>
-            <span class="sr-only" data-i18n="term.open">Ouvrir le terminal</span>
-            <kbd aria-hidden="true">/</kbd>
-          </button>
-        </div>
       </nav>
+
+      <div class="header-tools">
+        <button class="kbd-btn" type="button" data-open-palette aria-label="Ouvrir la palette de commandes" data-i18n-attr="aria-label:nav.palette" aria-haspopup="dialog">
+          <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <span class="mono kbd-label"><kbd>Ctrl</kbd><kbd>K</kbd></span>
+        </button>
+
+        <div class="lang-switch" role="group" aria-label="Langue du site" data-i18n-attr="aria-label:lang.label">
+          <button type="button" data-lang="fr" aria-pressed="true" lang="fr" title="Français">FR</button>
+          <button type="button" data-lang="en" aria-pressed="false" lang="en" title="English">EN</button>
+        </div>
+
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+          <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
+          <span class="visually-hidden" data-i18n="nav.menu">Menu</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <main id="main">
-    <!-- =================================================================
-         HERO
-         ================================================================= -->
-    <section class="hero" aria-labelledby="hero-title">
-      <!-- Topologie réseau animée en arrière-plan (purement décorative) -->
-      <canvas class="hero-net" id="hero-net" aria-hidden="true"></canvas>
-      <div class="hero-glow" aria-hidden="true"></div>
+  <main id="main" tabindex="-1">
+
+    <!-- ===================================================================
+         HERO — objet en chrome liquide (WebGL) + accroche
+         =================================================================== -->
+    <section class="hero" id="hero" aria-labelledby="hero-title">
+      <div class="hero-grid-bg" aria-hidden="true"></div>
 
       <div class="container hero-inner">
-        <div class="hero-text">
-          <p class="eyebrow mono"><span class="prompt">root@gva</span>:~$ whoami</p>
-          <h1 id="hero-title" class="chrome-text">Bruno Alves</h1>
-          <p class="hero-role" data-i18n="hero.role">Étudiant Bachelor Cybersécurité, Systèmes &amp; Réseaux</p>
-          <ul class="hero-tags" aria-label="Spécialités" data-i18n-aria="hero.tagsLabel">
-            <li data-i18n="hero.tag1">Infrastructure &amp; durcissement</li>
-            <li>AD Security</li>
-            <li>Pentest</li>
-            <li>Blue Team</li>
-          </ul>
-          <p class="hero-status">
-            <span class="pulse" aria-hidden="true"></span>
-            <span data-i18n="hero.status">En recherche d'alternance à Genève — sur site, hybride ou à distance</span>
+        <div class="hero-copy">
+          <p class="eyebrow mono reveal" data-i18n="hero.eyebrow">Cybersécurité · Systèmes &amp; Réseaux</p>
+          <h1 class="hero-title reveal" id="hero-title"><span class="chrome-text">Bruno<br>Alves</span></h1>
+          <p class="hero-role reveal" data-i18n="hero.role">Étudiant Bachelor Cybersécurité, Systèmes &amp; Réseaux · Infrastructure &amp; durcissement</p>
+          <p class="hero-lede reveal" data-i18n="hero.lede">Étudiant en cybersécurité, déjà éprouvé sur le terrain : infrastructure en production, support en organisation internationale, sécurité de sites sensibles.</p>
+
+          <p class="status-pill reveal">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span data-i18n="hero.available">Disponible pour une alternance à Genève</span>
           </p>
-          <div class="hero-cta">
-            <a class="btn btn-chrome" href="#projects" data-i18n="hero.cta1">Voir les projets</a>
-            <a class="btn btn-ghost" href="#contact" data-i18n="hero.cta2">Me contacter</a>
+
+          <div class="hero-actions reveal">
+            <a class="btn btn-chrome" href="#projects">
+              <span data-i18n="hero.cta.projects">Voir mes projets</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="#contact">
+              <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+              <span data-i18n="hero.cta.contact">Me contacter</span>
+            </a>
           </div>
-          <p class="hero-hint mono" data-i18n="hero.hint">Astuce : appuyez sur <kbd>/</kbd> pour ouvrir le terminal</p>
         </div>
 
+        <!-- Objet chrome : canvas WebGL. Le .blob-fallback (CSS pur) reste visible
+             si WebGL est indisponible. Le sigil géométrique tourne derrière. -->
         <div class="hero-visual" aria-hidden="true">
-          <svg class="hero-sigil"><use href="#sigil"/></svg>
-          <!-- Petit panneau « monitoring » : position, heure locale, statut -->
-          <div class="readout mono">
-            <div><span>LOC</span><b>GVA · 46.20°N 6.14°E</b></div>
-            <div><span>TIME</span><b id="clock">--:--:--</b></div>
-            <div><span>STATUS</span><b class="ok" data-i18n="hero.readout">OPEN · ALTERNANCE</b></div>
-            <div><span>LANG</span><b>PT · FR · EN · ES · IT</b></div>
-          </div>
+          <svg class="hero-sigil" viewBox="0 0 400 400">
+            <g fill="none" stroke="currentColor">
+              <circle cx="200" cy="200" r="192" stroke-width=".8"/>
+              <circle cx="200" cy="200" r="176" stroke-width=".6" stroke-dasharray="2 9"/>
+              <circle cx="200" cy="200" r="132" stroke-width=".6"/>
+              <path d="M200 8 366 296H34Z" stroke-width=".6"/>
+              <path d="M200 392 34 104h332Z" stroke-width=".6"/>
+              <path d="M200 8v384M8 200h384" stroke-width=".4" stroke-dasharray="1 6"/>
+            </g>
+          </svg>
+          <div class="blob-fallback"></div>
+          <canvas class="chrome-canvas" id="chrome-canvas"></canvas>
+          <span class="sparkle s1"></span><span class="sparkle s2"></span><span class="sparkle s3"></span><span class="sparkle s4"></span>
         </div>
+      </div>
+
+      <!-- Chiffres clés : compris en un coup d'œil par un recruteur non technique -->
+      <div class="container">
+        <ul class="stats reveal">
+          <li><strong class="stat-value" data-i18n="stat.vm.value">≈150</strong><span data-i18n="stat.vm.label">VM migrées en production</span></li>
+          <li><strong class="stat-value" data-i18n="stat.data.value">30+ To</strong><span data-i18n="stat.data.label">de données migrées, aucune perte</span></li>
+          <li><strong class="stat-value" data-i18n="stat.users.value">≈600</strong><span data-i18n="stat.users.label">collaborateurs supportés au CIO</span></li>
+          <li><strong class="stat-value" data-i18n="stat.years.value">4 ans</strong><span data-i18n="stat.years.label">de sécurité physique sur sites sensibles</span></li>
+        </ul>
       </div>
     </section>
 
-    <!-- =================================================================
-         À PROPOS
-         ================================================================= -->
+    <!-- ===================================================================
+         01 — À PROPOS
+         =================================================================== -->
     <section class="section" id="about" aria-labelledby="about-title">
       <div class="container">
         <header class="section-head reveal">
-          <span class="section-index mono">0x01</span>
-          <h2 id="about-title" data-i18n="about.title">À propos</h2>
+          <p class="kicker mono" data-i18n="about.kicker">01 — À propos</p>
+          <h2 class="section-title" id="about-title" data-i18n="about.title">Du terrain à la théorie, et retour.</h2>
         </header>
 
         <div class="about-grid">
           <div class="about-text reveal">
-            <p class="lead" data-i18n="about.p1">Étudiant en Bachelor cybersécurité, systèmes et réseaux au <strong>Geneva Institute of Technology</strong>, avec une expérience terrain variée : infrastructure et virtualisation chez <strong>HP</strong>, IA appliquée à la cybersécurité chez <strong>Cybersherpa</strong>, support IT au <strong>CIO</strong>.</p>
-            <p data-i18n="about.p2">Je cherche une alternance à Genève. Polyvalent, autonome et orienté terrain, je suis à l'aise en français et en anglais, face aux utilisateurs comme aux équipes techniques.</p>
-            <p data-i18n="about.p3">Mon orientation est double et assumée : la <strong>cybersécurité</strong> comme spécialité (sécurité Active Directory, pentest, Blue Team) et l'<strong>IT généraliste</strong> (infrastructure, réseau, support) comme socle.</p>
+            <p class="about-lead" data-i18n="about.p1">Je fais le lien entre la théorie du Bachelor et les environnements réels. Au showroom HP, j'ai migré environ 150 machines virtuelles et segmenté le réseau en production, sans aucune perte de données. Au siège du CIO, j'ai assuré le support de quelque 600 collaborateurs.</p>
+            <p data-i18n="about.p2">Quatre années de sécurité physique sur des sites sensibles m'ont donné ce que les manuels n'enseignent pas : le réflexe de la gestion d'incident et le sang-froid.</p>
+            <p data-i18n="about.p3">Polyvalent et autonome, je me spécialise en cybersécurité (sécurité Active Directory, pentest, Blue Team, durcissement) tout en restant opérationnel sur l'infrastructure, le réseau et le support.</p>
           </div>
 
-          <!-- Fiche d'identité façon « inventaire d'hôte » -->
-          <dl class="spec-sheet mono reveal">
-            <div><dt data-i18n="spec.edu">Formation</dt><dd>Geneva Institute of Technology (GIT)</dd></div>
-            <div><dt data-i18n="spec.focus">Spécialité</dt><dd>AD Security · Pentest · Blue Team</dd></div>
-            <div><dt data-i18n="spec.base">Socle</dt><dd data-i18n="spec.baseVal">Infrastructure · Réseau · Support</dd></div>
-            <div><dt data-i18n="spec.mode">Disponibilité</dt><dd data-i18n="spec.modeVal">Sur site · Hybride · À distance</dd></div>
-            <div><dt data-i18n="spec.zone">Zone</dt><dd data-i18n="spec.zoneVal">Genève, Suisse</dd></div>
-            <div><dt data-i18n="spec.seek">Recherche</dt><dd class="ok" data-i18n="spec.seekVal">Alternance</dd></div>
+          <dl class="facts card reveal">
+            <div class="fact">
+              <dt class="mono" data-i18n="about.fact.school">Formation</dt>
+              <dd data-i18n="about.fact.school.v">Bachelor Cybersécurité, Systèmes &amp; Réseaux · Geneva Institute of Technology (GIT)</dd>
+            </div>
+            <div class="fact">
+              <dt class="mono" data-i18n="about.fact.focus">Spécialité</dt>
+              <dd data-i18n="about.fact.focus.v">AD Security · Pentest · Blue Team · Durcissement</dd>
+            </div>
+            <div class="fact">
+              <dt class="mono" data-i18n="about.fact.also">Polyvalence</dt>
+              <dd data-i18n="about.fact.also.v">Infrastructure · Réseau · Support</dd>
+            </div>
+            <div class="fact">
+              <dt class="mono" data-i18n="about.fact.seeking">Recherche</dt>
+              <dd data-i18n="about.fact.seeking.v">Alternance à Genève · sur site, hybride ou à distance</dd>
+            </div>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- =================================================================
-         PARCOURS — présenté comme un traceroute : chaque poste est un « saut »
-         ================================================================= -->
-    <section class="section" id="path" aria-labelledby="path-title">
+    <!-- ===================================================================
+         02 — PARCOURS (timeline construite depuis content.js)
+         =================================================================== -->
+    <section class="section" id="experience" aria-labelledby="exp-title">
       <div class="container">
         <header class="section-head reveal">
-          <span class="section-index mono">0x02</span>
-          <h2 id="path-title" data-i18n="path.title">Parcours</h2>
-          <p class="section-cmd mono" aria-hidden="true">$ traceroute bruno.alves</p>
+          <p class="kicker mono" data-i18n="exp.kicker">02 — Parcours</p>
+          <h2 class="section-title" id="exp-title" data-i18n="exp.title">Des environnements réels, en production.</h2>
+          <p class="section-intro" data-i18n="exp.intro">Du plus récent au plus ancien. Filtrez par domaine pour aller à l'essentiel.</p>
         </header>
 
-        <ol class="trace">
-          <li class="hop reveal">
-            <div class="hop-meta mono"><span class="hop-n">01</span><span data-i18n="path.h1.date">mai – juin 2026</span></div>
-            <div class="hop-body">
-              <h3><span data-i18n="path.h1.role">Stagiaire Cybersécurité &amp; Solutions d'IA</span> <span class="at">— Cybersherpa</span></h3>
-              <p class="hop-place" data-i18n="path.h1.place">Genève</p>
-              <p data-i18n="path.h1.desc">Conception d'une pipeline multi-agents d'analyse de surface d'attaque. Architecture modulaire au format ouvert SKILL.md, moteur Hermes Agent et console Hermes Workspace auto-hébergée. Intégration du cadre légal suisse comme contrainte de conception (art. 143bis CP). Démonstration finale devant l'équipe.</p>
-            </div>
-          </li>
-          <li class="hop reveal">
-            <div class="hop-meta mono"><span class="hop-n">02</span><span data-i18n="path.h2.date">avr. – mai 2026</span></div>
-            <div class="hop-body">
-              <h3><span data-i18n="path.h2.role">Stagiaire Technicien Infrastructure &amp; Réseau</span> <span class="at">— HP</span></h3>
-              <p class="hop-place">Meyrin</p>
-              <p data-i18n="path.h2.desc">Déploiement du firewall OPNsense, segmentation VLAN, migration VMware ESXi vers Proxmox VE, documentation complète.</p>
-            </div>
-          </li>
-          <li class="hop reveal">
-            <div class="hop-meta mono"><span class="hop-n">03</span><span data-i18n="path.h3.date">mars – avr. 2026</span></div>
-            <div class="hop-body">
-              <h3><span data-i18n="path.h3.role">Technicien support informatique</span> <span class="at">— <abbr title="Comité International Olympique" data-i18n-title="path.h3.abbr">CIO</abbr></span></h3>
-              <p class="hop-place" data-i18n="path.h3.place">Lausanne · via Stefanini</p>
-              <p data-i18n="path.h3.desc">Tech Bar du siège (~600 collaborateurs), ~20 interventions par jour. Entra ID, Intune, hardware/software, BIOS, pilotes, réseau. Suivi et escalade sur ServiceNow. Support en français et en anglais.</p>
-            </div>
-          </li>
-          <li class="hop reveal">
-            <div class="hop-meta mono"><span class="hop-n">04</span><span data-i18n="path.h4.date">mars 2022 – févr. 2026</span></div>
-            <div class="hop-body">
-              <h3><span data-i18n="path.h4.role">Agent de sécurité auxiliaire</span> <span class="at">— Protectas</span></h3>
-              <p class="hop-place" data-i18n="path.h4.place">Genève · parallèlement aux études</p>
-              <p data-i18n="path.h4.desc">Sites sensibles (joailleries, horlogerie de luxe, banques), événements (Watches &amp; Wonders 4 années consécutives, Concours Hippique International), gestion d'incidents et désescalade, protocoles incendie, formations premiers secours.</p>
-            </div>
-          </li>
-          <li class="hop reveal">
-            <div class="hop-meta mono"><span class="hop-n">05</span><span data-i18n="path.h5.date">juin 2018 – févr. 2020</span></div>
-            <div class="hop-body">
-              <h3><span data-i18n="path.h5.role">Bénévole · Porte-parole</span> <span class="at">— IYSMUN</span></h3>
-              <p class="hop-place" data-i18n="path.h5.place">Genève · association accréditée auprès de l'ONU</p>
-              <p data-i18n="path.h5.desc">Prises de parole lors de dizaines d'événements, porte-parole dans la Salle XX du Palais des Nations devant délégations, ONG et direction de l'ONU.</p>
-            </div>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- =================================================================
-         PROJETS
-         ================================================================= -->
-    <section class="section" id="projects" aria-labelledby="projects-title">
-      <div class="container">
-        <header class="section-head reveal">
-          <span class="section-index mono">0x03</span>
-          <h2 id="projects-title" data-i18n="projects.title">Projets</h2>
-        </header>
-
-        <div class="projects">
-          <!-- Projet 1 : grande carte avec schéma d'architecture -->
-          <article class="project project--wide reveal">
-            <div class="project-head">
-              <span class="tag tag--done" data-i18n="tag.done">Fait</span>
-              <span class="project-n mono">P-01</span>
-            </div>
-            <h3 data-i18n="p1.title">Infrastructure &amp; virtualisation — HP Showroom</h3>
-
-            <!-- Indicateurs clés -->
-            <ul class="metrics" aria-label="Chiffres clés" data-i18n-aria="p1.metricsLabel">
-              <li><b>~150</b><span data-i18n="p1.m1">VMs migrées</span></li>
-              <li><b>30+ <small data-i18n="p1.unit">To</small></b><span data-i18n="p1.m2">de données</span></li>
-              <li><b>4</b><span data-i18n="p1.m3">serveurs HPE ProLiant</span></li>
-              <li><b class="ok">0</b><span data-i18n="p1.m4">perte de données</span></li>
-            </ul>
-
-            <div class="project-cols">
-              <div>
-                <p data-i18n="p1.desc1">Migration de ~150 VMs (plus de 30 To) de VMware ESXi vers Proxmox VE via QEMU, à chaud et en fenêtres de week-end, sur 4 serveurs HPE ProLiant. Checklist de migration et sauvegarde systématique avant chaque bascule : aucune perte de données.</p>
-                <p data-i18n="p1.desc2">Firewall OPNsense, VLAN (Users / IoT / Imprimantes), stockage TrueNAS iSCSI, téléphonie 3CX. Documentation de l'architecture, du plan d'adressage et de la procédure de reprise.</p>
-              </div>
-
-              <!-- Schéma de topologie simplifié (SVG inline, textes traduisibles) -->
-              <figure class="topology">
-                <svg viewBox="0 0 360 250" role="img" aria-labelledby="topo-title">
-                  <title id="topo-title" data-i18n="p1.topoTitle">Topologie simplifiée : OPNsense segmente les VLAN Users, IoT et Imprimantes ; cluster Proxmox de 4 nœuds relié au stockage TrueNAS en iSCSI.</title>
-                  <g class="topo-links">
-                    <path d="M180 46 V78"/>
-                    <path d="M180 78 H60 V110"/><path d="M180 78 V110"/><path d="M180 78 H300 V110"/>
-                    <path d="M180 132 V160"/>
-                    <path d="M180 196 V220"/>
-                    <path class="flow" d="M180 46 V78 H60 V110"/>
-                    <path class="flow flow--2" d="M180 132 V160"/>
-                  </g>
-                  <g class="topo-nodes">
-                    <rect x="120" y="22" width="120" height="26" rx="6" class="n-fw"/>
-                    <text x="180" y="39">OPNsense</text>
-                    <rect x="20" y="110" width="80" height="22" rx="5"/><text x="60" y="125">VLAN Users</text>
-                    <rect x="140" y="110" width="80" height="22" rx="5"/><text x="180" y="125">VLAN IoT</text>
-                    <rect x="260" y="110" width="80" height="22" rx="5"/><text x="300" y="125" data-i18n="p1.vlanPrint">VLAN Imprim.</text>
-                    <g class="n-cluster">
-                      <rect x="96" y="160" width="168" height="36" rx="6"/>
-                      <rect x="104" y="170" width="34" height="16" rx="3" class="n-host"/>
-                      <rect x="144" y="170" width="34" height="16" rx="3" class="n-host"/>
-                      <rect x="184" y="170" width="34" height="16" rx="3" class="n-host"/>
-                      <rect x="224" y="170" width="34" height="16" rx="3" class="n-host"/>
-                    </g>
-                    <text x="180" y="156" class="t-label">Proxmox VE · 4 × ProLiant</text>
-                    <rect x="130" y="220" width="100" height="22" rx="5" class="n-store"/>
-                    <text x="180" y="235">TrueNAS · iSCSI</text>
-                  </g>
-                </svg>
-              </figure>
-            </div>
-
-            <ul class="stack mono" aria-label="Stack">
-              <li>Proxmox VE</li><li>VMware ESXi</li><li>QEMU</li><li>OPNsense</li><li>TrueNAS</li><li>HPE ProLiant</li><li>VLAN</li>
-            </ul>
-          </article>
-
-          <!-- Projet 2 -->
-          <article class="project reveal">
-            <div class="project-head">
-              <span class="tag tag--done" data-i18n="tag.done">Fait</span>
-              <span class="project-n mono">P-02</span>
-            </div>
-            <h3 data-i18n="p2.title">Pipeline multi-agents d'analyse de surface d'attaque — Cybersherpa</h3>
-            <p data-i18n="p2.desc">Architecture modulaire SKILL.md, Hermes Agent et Hermes Workspace auto-hébergé, contraintes légales suisses intégrées dès la conception.</p>
-            <!-- Flux simplifié (éléments issus de la description) -->
-            <ol class="flowline mono" aria-label="Architecture" data-i18n-aria="p2.flowLabel">
-              <li>SKILL.md</li>
-              <li>Hermes Agent</li>
-              <li>Hermes Workspace</li>
-            </ol>
-            <p class="note mono" data-i18n="p2.note">// cadre légal : art. 143bis CP intégré au design</p>
-            <ul class="stack mono" aria-label="Stack">
-              <li data-i18n="stack.agents">agents IA</li><li>Hermes Agent</li><li>Python</li><li>SKILL.md</li>
-            </ul>
-          </article>
-
-          <!-- Projet 3 -->
-          <article class="project reveal">
-            <div class="project-head">
-              <span class="tag tag--wip" data-i18n="tag.wip">En cours</span>
-              <span class="project-n mono">P-03</span>
-            </div>
-            <h3 data-i18n="p3.title">Automatisation IT &amp; sécurité avec agents IA</h3>
-            <p data-i18n="p3.desc">Lab personnel basé sur Hermes Workspace : automatisation de tâches d'infrastructure, de sécurité et d'administration. Architecture et scripts en place, optimisation en cours.</p>
-            <!-- Jauge d'avancement indicative -->
-            <div class="build mono" aria-hidden="true">
-              <span data-i18n="p3.build">architecture [ok] · scripts [ok] · optimisation [..]</span>
-              <span class="build-bar"><i></i></span>
-            </div>
-            <ul class="stack mono" aria-label="Stack">
-              <li>Python</li><li>PowerShell</li><li data-i18n="stack.agents">agents IA</li>
-            </ul>
-          </article>
+        <div class="filters reveal" role="group" aria-label="Filtrer le parcours par domaine" data-i18n-attr="aria-label:exp.filter.label">
+          <button type="button" class="chip-btn" data-filter="all" aria-pressed="true" data-i18n="exp.filter.all">Tout</button>
+          <button type="button" class="chip-btn" data-filter="cyber" aria-pressed="false" data-i18n="exp.filter.cyber">Cybersécurité</button>
+          <button type="button" class="chip-btn" data-filter="infra" aria-pressed="false" data-i18n="exp.filter.infra">Infrastructure</button>
+          <button type="button" class="chip-btn" data-filter="support" aria-pressed="false" data-i18n="exp.filter.support">Support</button>
+          <button type="button" class="chip-btn" data-filter="field" aria-pressed="false" data-i18n="exp.filter.field">Terrain</button>
         </div>
 
-        <!-- Projet supplémentaire, plus compact -->
-        <article class="project project--extra reveal">
-          <div class="project-head">
-            <span class="tag tag--done" data-i18n="tag.done">Fait</span>
-            <span class="project-n mono">P-04</span>
-          </div>
-          <div class="extra-body">
-            <h3 data-i18n="p4.title">Utilitaires système personnels</h3>
-            <p data-i18n="p4.desc">Scripts de personnalisation automatisée (fond d'écran, écran de boot Windows &amp; Linux), customisation des réglages Linux via une interface scriptée, lanceurs de scripts selon le besoin.</p>
-          </div>
-          <ul class="stack mono" aria-label="Stack">
-            <li>Python</li><li>PowerShell</li><li>Bash</li><li>Linux</li><li>Windows</li>
-          </ul>
-        </article>
+        <div class="timeline">
+          <div class="timeline-rail" aria-hidden="true"><span class="timeline-fill"></span></div>
+          <ol class="timeline-list" id="timeline-list"><!-- rempli par script.js --></ol>
+          <p class="timeline-empty" id="timeline-empty" hidden data-i18n="exp.empty">Aucune expérience pour ce filtre.</p>
+        </div>
       </div>
     </section>
 
-    <!-- =================================================================
-         COMPÉTENCES
-         ================================================================= -->
+    <!-- ===================================================================
+         03 — PROJETS (cartes + topologie interactive)
+         =================================================================== -->
+    <section class="section" id="projects" aria-labelledby="proj-title">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="kicker mono" data-i18n="proj.kicker">03 — Projets</p>
+          <h2 class="section-title" id="proj-title" data-i18n="proj.title">Ce que j'ai construit et sécurisé.</h2>
+          <p class="section-intro" data-i18n="proj.intro">Projets réalisés en stage ou dans mon lab. Dépliez une carte pour le détail.</p>
+        </header>
+
+        <div class="projects-grid" id="projects-grid"><!-- rempli par script.js --></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         04 — COMPÉTENCES (constellation + catégories lisibles)
+         =================================================================== -->
     <section class="section" id="skills" aria-labelledby="skills-title">
       <div class="container">
         <header class="section-head reveal">
-          <span class="section-index mono">0x04</span>
-          <h2 id="skills-title" data-i18n="skills.title">Compétences</h2>
+          <p class="kicker mono" data-i18n="skills.kicker">04 — Compétences</p>
+          <h2 class="section-title" id="skills-title" data-i18n="skills.title">Une boîte à outils orientée infra et sécurité.</h2>
+          <p class="section-intro" data-i18n="skills.intro">Survolez ou sélectionnez un domaine pour l'éclairer dans la constellation.</p>
         </header>
 
-        <div class="skills">
-          <section class="skill-group reveal" aria-labelledby="sk1">
-            <h3 id="sk1"><span class="glyph glyph--tri" aria-hidden="true"></span><span data-i18n="skills.g1">Systèmes &amp; Réseaux</span></h3>
-            <ul class="chips"><li>Windows Server 2025</li><li>Linux</li><li>AD DS</li><li>DNS</li><li>DHCP</li><li>GPO</li><li>OPNsense</li><li>VLANs</li><li>TCP/IP</li><li>Cisco</li></ul>
-          </section>
-          <section class="skill-group reveal" aria-labelledby="sk2">
-            <h3 id="sk2"><span class="glyph glyph--dia" aria-hidden="true"></span><span data-i18n="skills.g2">Virtualisation &amp; Stockage</span></h3>
-            <ul class="chips"><li>VMware ESXi</li><li>Proxmox VE</li><li>QEMU</li><li>TrueNAS iSCSI</li><li data-i18n="skills.ha">Cluster HA</li></ul>
-          </section>
-          <section class="skill-group reveal" aria-labelledby="sk3">
-            <h3 id="sk3"><span class="glyph glyph--circ" aria-hidden="true"></span><span>Endpoint &amp; Cloud</span></h3>
-            <ul class="chips"><li>Intune</li><li>Entra ID</li><li>M365</li><li>Microsoft Security Center</li><li>ServiceNow</li></ul>
-          </section>
-          <section class="skill-group skill-group--accent reveal" aria-labelledby="sk4">
-            <h3 id="sk4"><span class="glyph glyph--tri-inv" aria-hidden="true"></span><span data-i18n="skills.g4">Cybersécurité</span></h3>
-            <ul class="chips"><li>Kali Linux</li><li>Wireshark</li><li>BloodHound</li><li data-i18n="skills.c1">Hardening AD</li><li>Tiering Model</li><li data-i18n="skills.c2">Analyse de surface d'attaque</li><li data-i18n="skills.c3">Agents IA appliqués à la sécurité</li><li data-i18n="skills.c4">Labs contrôlés</li></ul>
-          </section>
-          <section class="skill-group reveal" aria-labelledby="sk5">
-            <h3 id="sk5"><span class="glyph glyph--sq" aria-hidden="true"></span><span data-i18n="skills.g5">Scripting &amp; automatisation</span></h3>
-            <ul class="chips"><li>Python</li><li>PowerShell</li><li>Bash</li><li>SQL</li><li data-i18n="skills.c5">Scripts d'administration</li></ul>
-          </section>
-
-          <!-- Langues : niveaux CECR -->
-          <section class="skill-group skill-group--langs reveal" aria-labelledby="sk6">
-            <h3 id="sk6"><span class="glyph glyph--hex" aria-hidden="true"></span><span data-i18n="skills.langs">Langues</span></h3>
-            <ul class="langs">
-              <li><span data-i18n="lang.pt">Portugais</span><b>C2</b><small data-i18n="lang.native">langue maternelle</small></li>
-              <li><span data-i18n="lang.fr">Français</span><b>C2</b></li>
-              <li><span data-i18n="lang.en">Anglais</span><b>C2</b><small>Cambridge</small></li>
-              <li><span data-i18n="lang.es">Espagnol</span><b>C1</b><small data-i18n="lang.esLvl">oral · B2 écrit</small></li>
-              <li><span data-i18n="lang.it">Italien</span><b>B2</b><small data-i18n="lang.itLvl">oral · B1 écrit</small></li>
-            </ul>
-          </section>
-        </div>
-
-        <!-- Hors du terminal -->
-        <div class="hobbies reveal">
-          <h3 class="mono" data-i18n="hobbies.title">// hors ligne</h3>
-          <ul>
-            <li data-i18n="hobbies.h1">Randonnée, escalade &amp; via ferrata</li>
-            <li data-i18n="hobbies.h2">Sports d'équipe &amp; sports de combat</li>
-            <li data-i18n="hobbies.h3">Mécanique &amp; sports automobiles</li>
-            <li data-i18n="hobbies.h4">Technologie &amp; cybersécurité</li>
-          </ul>
+        <div class="skills-layout">
+          <figure class="constellation card reveal" aria-hidden="true">
+            <svg id="constellation" viewBox="0 0 640 560" role="presentation"></svg>
+          </figure>
+          <div class="skill-groups" id="skill-groups"><!-- rempli par script.js --></div>
         </div>
       </div>
     </section>
 
-    <!-- =================================================================
-         CONTACT
-         ================================================================= -->
-    <section class="section section--contact" id="contact" aria-labelledby="contact-title">
+    <!-- ===================================================================
+         05 — LANGUES & CENTRES D'INTÉRÊT
+         =================================================================== -->
+    <section class="section" id="languages" aria-labelledby="lang-title">
       <div class="container">
         <header class="section-head reveal">
-          <span class="section-index mono">0x05</span>
-          <h2 id="contact-title" data-i18n="contact.title">Contact</h2>
+          <p class="kicker mono" data-i18n="lang.kicker">05 — Langues &amp; intérêts</p>
+          <h2 class="section-title" id="lang-title" data-i18n="lang.title">Cinq langues, plusieurs terrains.</h2>
         </header>
 
-        <div class="contact reveal">
-          <p class="contact-lead" data-i18n="contact.lead">Une alternance en cybersécurité, infrastructure ou réseau à Genève ? Écrivez-moi : je réponds rapidement, en français ou en anglais.</p>
+        <div class="lang-layout">
+          <div class="card lang-card reveal">
+            <ul class="lang-list" id="lang-list"><!-- rempli par script.js --></ul>
+            <p class="lang-scale mono" data-i18n="lang.scale">Niveaux selon le Cadre européen commun de référence (A1 à C2)</p>
+          </div>
+
+          <div class="card interests-card reveal">
+            <h3 class="card-title" data-i18n="interests.title">En dehors de l'écran</h3>
+            <ul class="interest-list" id="interest-list"><!-- rempli par script.js --></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         06 — CONTACT
+         =================================================================== -->
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="container">
+        <div class="contact-panel card reveal">
+          <div class="contact-glow" aria-hidden="true"></div>
+          <p class="kicker mono" data-i18n="contact.kicker">06 — Contact</p>
+          <h2 class="section-title contact-title" id="contact-title"><span class="chrome-text" data-i18n="contact.title">Une alternance à pourvoir ? Parlons-en.</span></h2>
+          <p class="contact-lede">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span data-i18n="contact.lede">Ouvert aux opportunités d'alternance à Genève · sur site, hybride ou à distance.</span>
+          </p>
+
+          <div class="email-row">
+            <a class="email-link" href="mailto:bruno.alves@git.swiss">
+              <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+              <span class="mono">bruno.alves@git.swiss</span>
+            </a>
+            <button class="btn btn-ghost btn-sm" type="button" data-copy-email>
+              <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+              <span data-i18n="contact.copy">Copier l'adresse</span>
+            </button>
+          </div>
 
           <ul class="contact-links">
-            <li class="contact-card">
-              <span class="mono contact-k">mail</span>
-              <a href="mailto:bruno.alves@git.swiss">bruno.alves@git.swiss</a>
-              <button type="button" class="copy-btn mono" id="copy-email" data-copy="bruno.alves@git.swiss"
-                      data-i18n="contact.copy">copier</button>
+            <li>
+              <a class="btn btn-chrome" href="mailto:bruno.alves@git.swiss">
+                <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+                <span data-i18n="contact.write">Écrire un e-mail</span>
+              </a>
             </li>
-            <li class="contact-card">
-              <span class="mono contact-k">github</span>
-              <a href="https://github.com/burnBA" target="_blank" rel="noopener noreferrer">github.com/burnBA<span class="sr-only" data-i18n="a11y.newtab"> (nouvel onglet)</span></a>
+            <li>
+              <a class="btn btn-ghost" href="https://www.linkedin.com/in/bruno-alves-256067211/" target="_blank" rel="noopener noreferrer">
+                <svg class="icon" aria-hidden="true"><use href="#i-network"/></svg>
+                <span data-i18n="contact.linkedin">LinkedIn</span>
+                <span class="visually-hidden" data-i18n="contact.newTab">(nouvel onglet)</span>
+              </a>
             </li>
-            <li class="contact-card">
-              <span class="mono contact-k">linkedin</span>
-              <a href="https://www.linkedin.com/in/bruno-alves-256067211/" target="_blank" rel="noopener noreferrer">linkedin.com/in/bruno-alves<span class="sr-only" data-i18n="a11y.newtab"> (nouvel onglet)</span></a>
+            <li>
+              <a class="btn btn-ghost" href="https://github.com/burnBA" target="_blank" rel="noopener noreferrer">
+                <svg class="icon" aria-hidden="true"><use href="#i-branch"/></svg>
+                <span data-i18n="contact.github">GitHub</span>
+                <span class="visually-hidden" data-i18n="contact.newTab">(nouvel onglet)</span>
+              </a>
             </li>
           </ul>
-          <p class="copy-status mono" id="copy-status" role="status" aria-live="polite"></p>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- =====================================================================
+       PIED DE PAGE
+       ===================================================================== -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <svg class="footer-sigil" aria-hidden="true"><use href="#sigil"/></svg>
-      <p>© <span id="year">2026</span> Bruno Alves · <span data-i18n="footer.loc">Genève</span></p>
-      <p class="mono footer-hint" data-i18n="footer.hint">tapez <kbd>/</kbd> puis <code>help</code></p>
+      <p class="mono">© <span id="year">2026</span> <span data-i18n="footer.rights">Bruno Alves · Genève</span></p>
+      <p class="mono footer-hint" data-i18n="footer.hint">Astuce : Ctrl + K</p>
+      <div class="footer-tools">
+        <button class="link-btn" type="button" data-toggle-motion aria-pressed="false">
+          <svg class="icon" aria-hidden="true"><use href="#i-motion"/></svg>
+          <span data-i18n="footer.motion.on">Réduire les animations</span>
+        </button>
+        <a class="link-btn" href="#hero">
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg>
+          <span data-i18n="footer.top">Retour en haut</span>
+        </a>
+      </div>
     </div>
   </footer>
 
   <!-- =====================================================================
-       TERMINAL INTERACTIF (dialog natif : piège de focus + Échap gérés)
+       PALETTE DE COMMANDES (Ctrl + K / ⌘ + K / « / »)
        ===================================================================== -->
-  <dialog class="terminal" id="terminal" aria-labelledby="term-title">
-    <div class="term-bar">
-      <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-      <h2 id="term-title" class="mono">bruno@gva: ~</h2>
-      <button type="button" class="term-close" id="term-close" aria-label="Fermer le terminal" data-i18n-aria="term.close">×</button>
+  <div class="palette" id="palette" role="dialog" aria-modal="true" aria-labelledby="palette-title" hidden>
+    <div class="palette-backdrop" data-close-palette></div>
+    <div class="palette-box">
+      <h2 class="visually-hidden" id="palette-title" data-i18n="palette.title">Palette de commandes</h2>
+      <div class="palette-search">
+        <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="palette-input" type="text" autocomplete="off" spellcheck="false"
+               role="combobox" aria-expanded="true" aria-controls="palette-list" aria-autocomplete="list"
+               placeholder="Rechercher une section, une action…" data-i18n-attr="placeholder:palette.placeholder,aria-label:palette.title" aria-label="Palette de commandes">
+        <kbd class="mono">Esc</kbd>
+      </div>
+      <ul class="palette-list" id="palette-list" role="listbox" aria-label="Palette de commandes" data-i18n-attr="aria-label:palette.title"></ul>
+      <pre class="palette-output mono" id="palette-output" hidden></pre>
+      <p class="palette-hint mono" data-i18n="palette.hint">↑↓ naviguer · Entrée valider · Échap fermer</p>
     </div>
-    <div class="term-out mono" id="term-out" role="log" aria-live="polite"></div>
-    <form class="term-form mono" id="term-form" autocomplete="off">
-      <label for="term-input" class="prompt">bruno@gva:~$</label>
-      <input id="term-input" type="text" spellcheck="false" autocapitalize="off" aria-describedby="term-help">
-    </form>
-    <p class="sr-only" id="term-help" data-i18n="term.help">Tapez help pour la liste des commandes. Échap pour fermer.</p>
-  </dialog>
+  </div>
+
+  <!-- Notification éphémère (copie d'e-mail, easter egg…) -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <p class="noscript">Ce site utilise JavaScript pour afficher le parcours et les projets. Contact : <a href="mailto:bruno.alves@git.swiss">bruno.alves@git.swiss</a></p>
+  </noscript>
 </body>
 </html>
