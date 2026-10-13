@@ -6,8 +6,8 @@
   <title>Bruno Alves — Cybersécurité, Systèmes &amp; Réseaux</title>
   <meta name="description" content="Bruno Alves, étudiant Bachelor Cybersécurité, Systèmes &amp; Réseaux au GIT (Genève). Sécurité Active Directory, pentest, Blue Team, infrastructure et durcissement. Disponible pour une alternance à Genève.">
   <meta name="author" content="Bruno Alves">
-  <meta name="theme-color" content="#08070d">
-  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#f8f7f4">
+  <meta name="color-scheme" content="light">
   <link rel="canonical" href="https://burnba.github.io/portfolio/">
 
   <!-- Open Graph / aperçu de partage (LinkedIn, Teams, messageries…) -->
@@ -27,10 +27,10 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
   <!-- Polices Google Fonts (3 au total) :
-       Unbounded (titres, Y2K), Instrument Sans (texte), JetBrains Mono (détails techniques) -->
+       Instrument Sans (titres et texte), JetBrains Mono (détails techniques) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 
   <link rel="stylesheet" href="style.css">
 
@@ -175,21 +175,10 @@
         </div>
 
         <!-- Objet chrome : canvas WebGL. Le .blob-fallback (CSS pur) reste visible
-             si WebGL est indisponible. Le sigil géométrique tourne derrière. -->
+             si WebGL est indisponible. -->
         <div class="hero-visual" aria-hidden="true">
-          <svg class="hero-sigil" viewBox="0 0 400 400">
-            <g fill="none" stroke="currentColor">
-              <circle cx="200" cy="200" r="192" stroke-width=".8"/>
-              <circle cx="200" cy="200" r="176" stroke-width=".6" stroke-dasharray="2 9"/>
-              <circle cx="200" cy="200" r="132" stroke-width=".6"/>
-              <path d="M200 8 366 296H34Z" stroke-width=".6"/>
-              <path d="M200 392 34 104h332Z" stroke-width=".6"/>
-              <path d="M200 8v384M8 200h384" stroke-width=".4" stroke-dasharray="1 6"/>
-            </g>
-          </svg>
           <div class="blob-fallback"></div>
           <canvas class="chrome-canvas" id="chrome-canvas"></canvas>
-          <span class="sparkle s1"></span><span class="sparkle s2"></span><span class="sparkle s3"></span><span class="sparkle s4"></span>
         </div>
       </div>
 

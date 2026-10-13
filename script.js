@@ -514,19 +514,13 @@
       const pos = {}; // position de chaque compétence, par libellé FR
       let out = `<defs>
           <linearGradient id="cst-chrome" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#9f9ab4"/>
-            <stop offset=".7" stop-color="#e6ddff"/><stop offset="1" stop-color="#b59cff"/>
+            <stop offset="0" stop-color="#8b93e8"/><stop offset="1" stop-color="#343da3"/>
           </linearGradient>
         </defs>`;
 
-      // Fond étoilé
-      for (let i = 0; i < 80; i++) {
-        out += `<circle class="cst-bgstar" cx="${(rand() * W).toFixed(1)}" cy="${(rand() * H).toFixed(1)}" r="${(rand() * 0.9 + 0.2).toFixed(2)}" opacity="${(rand() * 0.4 + 0.1).toFixed(2)}"/>`;
-      }
-      // Sigil central discret
-      out += `<g fill="none" stroke="rgba(205,188,255,.18)">
-          <circle cx="${cx}" cy="${cy}" r="46"/><circle cx="${cx}" cy="${cy}" r="30" stroke-dasharray="2 5"/>
-          <path d="M${cx} ${cy - 46}L${cx + 40} ${cy + 23}H${cx - 40}Z"/></g>`;
+      // Repère central discret
+      out += `<g fill="none" stroke="rgba(29,28,34,.1)">
+          <circle cx="${cx}" cy="${cy}" r="46"/><circle cx="${cx}" cy="${cy}" r="30" stroke-dasharray="2 5"/></g>`;
 
       const clusters = C.skills.map((g, gi) => {
         const ang = (-90 + gi * 72) * Math.PI / 180;
@@ -551,7 +545,7 @@
           if (anchor === 'middle') lx = clamp(lx, w / 2 + 6, W - w / 2 - 6);
           links += `<line class="cst-link" x1="${hx.toFixed(1)}" y1="${hy.toFixed(1)}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`;
           stars += `<circle class="cst-star" data-skill="${gi}-${i}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2"/>`;
-          labels += `<text class="cst-label" data-skill="${gi}-${i}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" paint-order="stroke" stroke="#0d0b15" stroke-width="4" stroke-linejoin="round">${esc(label)}</text>`;
+          labels += `<text class="cst-label" data-skill="${gi}-${i}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" paint-order="stroke" stroke="#ffffff" stroke-width="4" stroke-linejoin="round">${esc(label)}</text>`;
         });
         // Libellé du domaine sous (ou sur) le nœud central de l'amas
         const hubLabelY = Math.sin(ang) < -0.5 ? hy + 30 : hy - 22;
@@ -561,14 +555,14 @@
             ${links}${stars}
             <circle class="cst-hub-ring" cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="13"/>
             <circle class="cst-hub-core" cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="7"/>
-            <text class="cst-hub-label" x="${hx.toFixed(1)}" y="${hubLabelY.toFixed(1)}" text-anchor="middle" paint-order="stroke" stroke="#0d0b15" stroke-width="5" stroke-linejoin="round">${esc(pick(g.label))}</text>
+            <text class="cst-hub-label" x="${hx.toFixed(1)}" y="${hubLabelY.toFixed(1)}" text-anchor="middle" paint-order="stroke" stroke="#ffffff" stroke-width="5" stroke-linejoin="round">${esc(pick(g.label))}</text>
             ${labels}
           </g>`;
       });
 
       // Liens transversaux (en pointillés, sous les amas)
       const cross = this.cross.filter(([a, b]) => pos[a] && pos[b]).map(([a, b]) =>
-        `<line x1="${pos[a][0].toFixed(1)}" y1="${pos[a][1].toFixed(1)}" x2="${pos[b][0].toFixed(1)}" y2="${pos[b][1].toFixed(1)}" stroke="rgba(196,255,69,.16)" stroke-dasharray="2 5"/>`).join('');
+        `<line x1="${pos[a][0].toFixed(1)}" y1="${pos[a][1].toFixed(1)}" x2="${pos[b][0].toFixed(1)}" y2="${pos[b][1].toFixed(1)}" stroke="rgba(74,85,201,.14)" stroke-dasharray="2 5"/>`).join('');
 
       svg.innerHTML = out + cross + clusters.join('');
       this.bindGroups();
@@ -798,8 +792,8 @@
      12. OBJET EN CHROME LIQUIDE — WebGL (raymarching de métaballes)
      ------------------------------------------------------------------------
      Trois sphères fusionnent (smooth-min) et une quatrième suit le curseur.
-     La surface reflète un « studio » procédural (bandes de lumière, softbox
-     violette et verte) avec un léger film iridescent sur les bords.
+     La surface reflète un « studio » procédural clair (bandes de lumière,
+     softbox indigo) avec un très léger film iridescent sur les bords.
      Pause automatique hors écran / onglet masqué ; image fixe si animations
      coupées ; repli CSS (.blob-fallback) si WebGL est indisponible.
      ======================================================================== */
@@ -851,14 +845,14 @@
       // Environnement « studio » procédural reflété par le chrome
       vec3 env(vec3 r) {
         float y = r.y;
-        vec3 col = mix(vec3(.09, .08, .15), vec3(.34, .29, .5), smoothstep(-.7, .05, y));
-        col += vec3(.55, .52, .68) * smoothstep(.12, 0., abs(y + .5)) * .7;  // bande basse argentée
-        col = mix(col, vec3(.93, .91, 1.), smoothstep(-.02, .32, y) * .85);
-        col = mix(col, vec3(.09, .07, .18), smoothstep(.42, 1., y));
-        col += vec3(1.) * smoothstep(.05, 0., abs(y + .02)) * .55;
-        col += vec3(.6, .4, 1.) * pow(max(dot(r, normalize(vec3(-.9, .2, .45))), 0.), 6.) * 1.4;
-        col += vec3(.72, 1., .27) * pow(max(dot(r, normalize(vec3(.95, -.35, .3))), 0.), 9.) * 1.1;
-        col += vec3(1.) * pow(max(dot(r, normalize(vec3(.35, .8, .6))), 0.), 70.) * 2.6;
+        vec3 col = mix(vec3(.36, .37, .45), vec3(.66, .67, .76), smoothstep(-.7, .05, y));
+        col += vec3(.6, .6, .68) * smoothstep(.12, 0., abs(y + .5)) * .5;   // bande basse argentée
+        col = mix(col, vec3(.97, .97, .99), smoothstep(-.02, .32, y) * .9);
+        col = mix(col, vec3(.42, .43, .53), smoothstep(.45, 1., y) * .8);
+        col += vec3(1.) * smoothstep(.05, 0., abs(y + .02)) * .4;
+        col += vec3(.38, .44, 1.) * pow(max(dot(r, normalize(vec3(-.9, .2, .45))), 0.), 6.) * .7;
+        col += vec3(.75, .85, 1.) * pow(max(dot(r, normalize(vec3(.95, -.35, .3))), 0.), 9.) * .5;
+        col += vec3(1.) * pow(max(dot(r, normalize(vec3(.35, .8, .6))), 0.), 70.) * 2.;
         return col;
       }
 
@@ -881,15 +875,15 @@
           vec3 n = nrm(p);
           vec3 r = reflect(rd, n);
           float fres = pow(1. - max(dot(n, -rd), 0.), 2.4);
-          vec3 col = env(r) * (.8 + .32 * fres) + vec3(.05, .045, .08);
+          vec3 col = env(r) * (.82 + .25 * fres) + vec3(.04, .04, .05);
           vec3 iri = .55 + .45 * cos(6.2831 * (vec3(0., .33, .67) + fres * 1.4 + uTime * .04));
-          col = mix(col, col * iri * 1.45, .4 * fres);
-          col += vec3(.5, .32, 1.) * pow(fres, 4.) * .5;
+          col = mix(col, col * iri * 1.3, .18 * fres);
+          col += vec3(.29, .33, .79) * pow(fres, 4.) * .25;
           gl_FragColor = vec4(col, 1.);
         } else {
-          // Halo violet autour de l'objet (alpha prémultiplié)
-          float g = exp(-minD * 7.) * .42;
-          gl_FragColor = vec4(vec3(.45, .28, 1.) * g, g);
+          // Halo indigo très léger autour de l'objet (alpha prémultiplié)
+          float g = exp(-minD * 7.) * .16;
+          gl_FragColor = vec4(vec3(.29, .33, .79) * g, g);
         }
       }`,
 
@@ -1036,8 +1030,8 @@
     const fr = state.lang === 'fr';
     try {
       console.log('%c Bruno Alves %c cyber · sys · net ',
-        'background:#cdbcff;color:#0b0a12;font-weight:700;padding:4px 6px;border-radius:4px 0 0 4px',
-        'background:#c4ff45;color:#0b0a12;padding:4px 6px;border-radius:0 4px 4px 0');
+        'background:#1d1c22;color:#fff;font-weight:700;padding:4px 6px;border-radius:4px 0 0 4px',
+        'background:#4a55c9;color:#fff;padding:4px 6px;border-radius:0 4px 4px 0');
       console.log(fr
         ? 'Vous inspectez le code source ? Bon réflexe de reconnaissance.\nEssayez Ctrl + K puis « nmap », ou le code Konami.\nContact : bruno.alves@git.swiss'
         : 'Inspecting the source? Good recon instinct.\nTry Ctrl + K then “nmap”, or the Konami code.\nContact: bruno.alves@git.swiss');
