@@ -1,5 +1,5 @@
 /* ==========================================================================
-   style.css — Bruno Alves · Portfolio (thème clair, sobre)
+   style.css · Bruno Alves · Portfolio (thème foncé par défaut + thème clair)
    --------------------------------------------------------------------------
    1. Design tokens (variables)        8. Projets & topologie
    2. Base & typographie               9. Compétences & constellation
@@ -12,40 +12,51 @@
 
 
 /* ==========================================================================
-   1. DESIGN TOKENS — toute la charte passe par ces variables
+   1. DESIGN TOKENS · toute la charte passe par ces variables
    ========================================================================== */
 :root {
-  /* Fond & surfaces : papier clair, légèrement chaud */
-  --bg-rgb: 248, 247, 244;
-  --bg: rgb(var(--bg-rgb));   /* #f8f7f4 */
-  --bg-2: #f1f0ec;
+  /* ---- Thème clair (data-theme="light") ----
+     Fond un peu plus soutenu que les surfaces : cartes, boutons et widgets
+     blancs ressortent nettement, avec filets et ombres plus marqués. */
+  --bg-rgb: 239, 238, 233;
+  --bg: rgb(var(--bg-rgb));   /* #efeee9 */
+  --bg-2: #e7e6e0;
   --surface: #ffffff;
-  --surface-2: #f5f4f0;
-  --ink-rgb: 29, 28, 34;
-  --line: rgba(var(--ink-rgb), 0.09);
-  --line-strong: rgba(var(--ink-rgb), 0.17);
+  --surface-2: #f6f5f1;
+  --ink-rgb: 24, 23, 30;
+  --line: rgba(var(--ink-rgb), 0.12);
+  --line-strong: rgba(var(--ink-rgb), 0.24);
+  --glass: rgba(255, 255, 255, 0.82);
+  --ghost-fill: rgba(255, 255, 255, 0.6);
 
-  /* Texte — contrastes vérifiés AA sur --bg et --surface */
-  --text: #1d1c22;        /* ≈ 16:1 */
-  --text-2: #4a4852;      /* ≈ 8.5:1 */
-  --text-3: #6b6873;      /* ≈ 5:1  */
+  /* Texte · contrastes vérifiés AA sur --bg et --surface */
+  --text: #18171e;        /* ≈ 16:1 */
+  --text-2: #45434d;      /* ≈ 8.5:1 */
+  --text-3: #615e69;      /* ≈ 5.5:1 */
+  --on-ink: #ffffff;      /* texte posé sur un aplat --text */
 
-  /* Un seul accent (indigo doux) + un vert réservé au statut « disponible » */
-  --accent-rgb: 74, 85, 201;
-  --accent: rgb(var(--accent-rgb));   /* #4a55c9 ≈ 6:1 */
-  --accent-strong: #343da3;
-  --accent-soft: #eceefb;
-  --green: #2d7a4f;
-  --green-rgb: 45, 122, 79;
+  /* Un accent indigo vif + un vert réservé au statut « disponible » */
+  --accent-rgb: 61, 70, 214;
+  --accent: rgb(var(--accent-rgb));   /* #3d46d6 ≈ 6.5:1 */
+  --accent-strong: #2c34b0;
+  --accent-soft: #e3e5fb;
+  --on-accent: #ffffff;
+  --green: #22744a;
+  --green-rgb: 34, 116, 74;
 
-  /* Reflet discret sur les grands titres (encre → indigo → encre) */
+  /* Reflet sur le nom (encre → indigo → encre) */
   --grad-chrome: linear-gradient(100deg,
-      #1d1c22 0%, #1d1c22 35%, #4a55c9 50%, #1d1c22 65%, #1d1c22 100%);
+      #18171e 0%, #18171e 35%, #3d46d6 50%, #18171e 65%, #18171e 100%);
   /* Bordures : simple filet */
   --grad-iris: linear-gradient(var(--line), var(--line));
   --grad-iris-strong: linear-gradient(var(--line-strong), var(--line-strong));
 
-  /* Typographie — 2 familles */
+  /* Constellation des compétences */
+  --cst-hub-a: #8b93e8;
+  --cst-hub-b: #2c34b0;
+
+  /* Typographie · 3 familles (serif réservée au nom) */
+  --font-name: "Instrument Serif", "Iowan Old Style", Georgia, "Times New Roman", serif;
   --font-display: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
@@ -56,7 +67,7 @@
   --fs-md: 1.1875rem;
   --fs-lg: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
   --fs-xl: clamp(1.85rem, 1.2rem + 2.6vw, 3.1rem);
-  --fs-hero: clamp(3.1rem, 1.4rem + 7.6vw, 7.25rem);
+  --fs-hero: clamp(3.6rem, 1.6rem + 8.4vw, 8.25rem);
   --lh-tight: 1.08;
   --lh-snug: 1.3;
   --lh-body: 1.65;
@@ -81,8 +92,9 @@
   --r-md: 16px;
   --r-lg: 24px;
   --r-pill: 999px;
-  --shadow-card: 0 1px 2px rgba(var(--ink-rgb), 0.04), 0 12px 32px -20px rgba(var(--ink-rgb), 0.18);
-  --glow-violet: 0 0 0 1px rgba(var(--accent-rgb), 0.25), 0 8px 24px -14px rgba(var(--accent-rgb), 0.45);
+  --shadow-card: 0 1px 2px rgba(var(--ink-rgb), 0.06), 0 16px 36px -18px rgba(var(--ink-rgb), 0.28);
+  --shadow-btn: 0 8px 22px -10px rgba(var(--accent-rgb), 0.75);
+  --glow-violet: 0 0 0 1px rgba(var(--accent-rgb), 0.3), 0 8px 24px -12px rgba(var(--accent-rgb), 0.5);
   --glow-acid: 0 0 0 3px rgba(var(--green-rgb), 0.15);
 
   /* Mouvement */
@@ -91,6 +103,47 @@
   --t-fast: 160ms;
   --t-med: 320ms;
   --t-slow: 700ms;
+}
+
+
+/* ---- Thème foncé (par défaut) : noir, orange néon et chrome ---- */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-rgb: 10, 10, 12;
+  --bg: rgb(var(--bg-rgb));   /* #0a0a0c */
+  --bg-2: #111114;
+  --surface: #141418;
+  --surface-2: #1b1b20;
+  --ink-rgb: 240, 237, 232;
+  --line: rgba(var(--ink-rgb), 0.1);
+  --line-strong: rgba(var(--ink-rgb), 0.2);
+  --glass: rgba(20, 20, 24, 0.78);
+  --ghost-fill: rgba(255, 255, 255, 0.04);
+
+  --text: #f2efea;        /* ≈ 17:1 sur #0a0a0c */
+  --text-2: #bab6af;      /* ≈ 9:1 */
+  --text-3: #8e8a84;      /* ≈ 5.6:1 */
+  --on-ink: #0a0a0c;
+
+  /* Orange néon : texte foncé posé dessus (≈ 7:1) */
+  --accent-rgb: 255, 106, 26;
+  --accent: rgb(var(--accent-rgb));   /* #ff6a1a */
+  --accent-strong: #ff8a45;
+  --accent-soft: rgba(255, 106, 26, 0.14);
+  --on-accent: #120904;
+  --green: #4ade80;
+  --green-rgb: 74, 222, 128;
+
+  /* Nom en chrome : argent, éclat blanc et reflet orange qui glisse */
+  --grad-chrome: linear-gradient(100deg,
+      #8d8b95 0%, #e9e7ee 22%, #ffffff 34%, #ff7a2e 48%, #ffd2b0 54%, #ffffff 62%, #9d9ba6 80%, #e9e7ee 100%);
+
+  --cst-hub-a: #ffd2b0;
+  --cst-hub-b: #ff6a1a;
+
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 20px 44px -24px rgba(0, 0, 0, 0.9);
+  --shadow-btn: 0 0 0 1px rgba(var(--accent-rgb), 0.6), 0 8px 28px -6px rgba(var(--accent-rgb), 0.65);
+  --glow-violet: 0 0 0 1px rgba(var(--accent-rgb), 0.45), 0 0 26px -6px rgba(var(--accent-rgb), 0.55);
 }
 
 
@@ -136,7 +189,7 @@ kbd { font-family: var(--font-mono); }
 
 ::selection { background: var(--accent-soft); color: var(--text); }
 
-/* Focus clavier très visible (accent) — jamais supprimé */
+/* Focus clavier très visible (accent) · jamais supprimé */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
@@ -204,7 +257,7 @@ main:focus { outline: none; }
   padding: var(--s-2) var(--s-4);
   border-radius: var(--r-pill);
   background: var(--text);
-  color: #fff;
+  color: var(--on-ink);
   font-weight: 600;
   text-decoration: none;
   transform: translateY(-160%);
@@ -250,9 +303,9 @@ main:focus { outline: none; }
 
 /* Bouton principal : aplat d'accent + reflet discret au survol */
 .btn-chrome {
-  color: #fff;
+  color: var(--on-accent);
   background: var(--accent);
-  box-shadow: 0 6px 18px -10px rgba(var(--accent-rgb), 0.7);
+  box-shadow: var(--shadow-btn);
 }
 .btn-chrome::after {
   content: "";
@@ -265,7 +318,7 @@ main:focus { outline: none; }
 }
 .btn-chrome:hover::after,
 .btn-chrome:focus-visible::after { transform: translateX(120%); }
-.btn-chrome:hover { background: var(--accent-strong); box-shadow: 0 10px 24px -12px rgba(var(--accent-rgb), 0.8); }
+.btn-chrome:hover { background: var(--accent-strong); box-shadow: var(--shadow-btn), 0 12px 30px -10px rgba(var(--accent-rgb), 0.7); }
 .btn-chrome .icon { transition: transform var(--t-med) var(--ease-out); }
 .btn-chrome:hover .icon { transform: translateX(3px); }
 
@@ -274,6 +327,7 @@ main:focus { outline: none; }
   color: var(--text);
   background: var(--surface);
   border-color: var(--line-strong);
+  box-shadow: var(--shadow-card);
 }
 .btn-ghost:hover { border-color: rgba(var(--accent-rgb), 0.5); box-shadow: var(--glow-violet); }
 
@@ -339,7 +393,7 @@ main:focus { outline: none; }
 }
 .chip-btn:hover { color: var(--text); border-color: var(--accent); }
 .chip-btn[aria-pressed="true"] {
-  color: #fff;
+  color: var(--on-ink);
   border-color: transparent;
   background: var(--text);
 }
@@ -483,10 +537,10 @@ kbd {
   text-decoration: none;
 }
 .wordmark-name {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: var(--font-name);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
   color: var(--text);
 }
 .wordmark-tag {
@@ -541,6 +595,25 @@ kbd {
 .kbd-btn:hover { color: var(--text); border-color: var(--accent); }
 .kbd-label { display: inline-flex; gap: 3px; }
 
+/* Bouton de thème : lune en clair, soleil en foncé */
+.theme-toggle {
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: rgba(var(--ink-rgb), 0.03);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: border-color var(--t-fast), color var(--t-fast), box-shadow var(--t-med);
+}
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); box-shadow: var(--glow-violet); }
+.theme-toggle .icon { grid-area: 1 / 1; width: 18px; height: 18px; }
+.theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
 /* Sélecteur de langue segmenté */
 .lang-switch {
   display: inline-flex;
@@ -565,7 +638,7 @@ kbd {
 }
 .lang-switch button:hover { color: var(--text); }
 .lang-switch button[aria-pressed="true"] {
-  color: #fff;
+  color: var(--on-ink);
   background: var(--text);
 }
 
@@ -614,10 +687,6 @@ kbd {
 .hero-inner {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-  align-items: center;
-  gap: var(--s-6);
 }
 
 .eyebrow {
@@ -629,13 +698,23 @@ kbd {
 }
 
 .hero-title {
-  font-family: var(--font-display);
+  font-family: var(--font-name);
   font-size: var(--fs-hero);
-  font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
   margin-bottom: var(--s-5);
 }
+/* Une ligne par mot ; marge interne pour que le dégradé (background-clip: text)
+   couvre aussi les débords de l'italique et des jambages · sinon les bords
+   des lettres sont coupés. */
+.hero-name {
+  display: block;
+  width: fit-content;
+  margin: -0.06em -0.14em -0.12em;
+  padding: 0.06em 0.14em 0.12em;
+}
+.hero-name + .hero-name { font-style: italic; }
 
 .hero-role {
   max-width: 34rem;
@@ -662,31 +741,48 @@ kbd {
   margin-top: var(--s-5);
 }
 
-/* ---- Objet chrome ---- */
-.hero-visual {
+/* ---- Nom + objet chrome ----
+   L'objet est accroché à droite du nom, centré sur sa hauteur, avec un léger
+   décalage pour que le nom reste lisible. --hv = côté du cadre ; la sphère
+   visible en occupe ~54 %. */
+.hero-head {
+  --hv: clamp(260px, 36vw, 540px);
   position: relative;
-  width: 100%;
-  max-width: 560px;
+  width: fit-content;
+  margin-bottom: var(--s-5);
+}
+.hero-head .hero-title { margin-bottom: 0; }
+.hero-visual {
+  position: absolute;
+  z-index: 2;            /* la goutte passe par-dessus le texte */
+  top: 50%;
+  left: calc(100% + var(--s-4));
+  width: var(--hv);
   aspect-ratio: 1;
-  justify-self: center;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
+/* Canvas WebGL sur tout le hero, au-dessus du contenu : l'objet est calé
+   sur .hero-visual (cf. chrome.draw), la goutte peut survoler le texte */
 .chrome-canvas {
   position: absolute;
   inset: 0;
+  z-index: 3;
   width: 100%;
   height: 100%;
+  pointer-events: none;
   opacity: 0;
   transition: opacity 900ms var(--ease-out);
 }
-.hero-visual.webgl-ready .chrome-canvas { opacity: 1; }
+.chrome-canvas.is-ready { opacity: 1; }
 .hero-visual.webgl-ready .blob-fallback { opacity: 0; }
 
-/* Fallback CSS : blob chromé statique (sans WebGL) */
+/* Fallback CSS : barre chromée statique (sans WebGL), même emprise que l'objet 3D */
 .blob-fallback {
   position: absolute;
-  inset: 16%;
-  border-radius: 58% 42% 55% 45% / 48% 58% 42% 52%;
+  inset: 45% -40% 45% 10%;
+  border-radius: 999px;
   background:
     radial-gradient(circle at 32% 28%, #ffffff 0 6%, transparent 22%),
     radial-gradient(circle at 20% 70%, rgba(var(--accent-rgb), 0.35), transparent 45%),
@@ -696,14 +792,7 @@ kbd {
     inset 18px 22px 40px rgba(255, 255, 255, 0.7),
     0 30px 80px -30px rgba(var(--accent-rgb), 0.35);
   transition: opacity 900ms var(--ease-out);
-  animation: blob-morph 14s var(--ease-liquid) infinite alternate;
 }
-@keyframes blob-morph {
-  0%   { border-radius: 58% 42% 55% 45% / 48% 58% 42% 52%; }
-  50%  { border-radius: 42% 58% 38% 62% / 60% 40% 60% 40%; }
-  100% { border-radius: 52% 48% 62% 38% / 42% 54% 46% 58%; }
-}
-
 /* ---- Chiffres clés ---- */
 .stats {
   position: relative;
@@ -713,7 +802,8 @@ kbd {
   margin-top: var(--s-7);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--glass);
+  box-shadow: var(--shadow-card);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
@@ -1042,7 +1132,7 @@ kbd {
   stroke-width: 1;
   transition: stroke var(--t-fast), fill var(--t-fast);
 }
-.topo-node.is-ghost rect { fill: rgba(255, 255, 255, 0.6); stroke-dasharray: 4 4; }
+.topo-node.is-ghost rect { fill: var(--ghost-fill); stroke-dasharray: 4 4; }
 .topo-node.accent-acid rect { stroke: rgba(var(--green-rgb), 0.6); }
 .topo-node.accent-violet rect { stroke: rgba(var(--accent-rgb), 0.75); }
 .topo-node .topo-icon { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
@@ -1104,6 +1194,9 @@ kbd {
 .cst-star { fill: var(--accent); transition: r var(--t-med) var(--ease-out), fill var(--t-med), opacity var(--t-med); }
 .cst-hub-ring { fill: none; stroke: rgba(var(--accent-rgb), 0.35); stroke-width: 1; transition: stroke var(--t-med); }
 .cst-hub-core { fill: url(#cst-chrome); }
+.cst-center { stroke: rgba(var(--ink-rgb), 0.1); }
+.cst-bridge { stroke: rgba(var(--accent-rgb), 0.16); }
+.cst-label, .cst-hub-label { stroke: var(--surface); }
 .cst-hub-label { fill: var(--text); font-family: var(--font-display); font-size: 12px; font-weight: 500; letter-spacing: 0.02em; transition: fill var(--t-med); }
 .cst-label {
   fill: var(--text-2);
@@ -1423,7 +1516,7 @@ kbd {
   border: 0;
   border-radius: var(--r-pill);
   background: var(--text);
-  color: #fff;
+  color: var(--on-ink);
   font-size: var(--fs-sm);
   text-align: center;
   box-shadow: 0 20px 50px -20px rgba(var(--ink-rgb), 0.5);
@@ -1461,7 +1554,8 @@ kbd {
   background: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 3px);
   mix-blend-mode: multiply;
 }
-.phosphor .hero-visual { filter: hue-rotate(-140deg) saturate(1.2); }
+.phosphor .hero-visual,
+.phosphor .chrome-canvas { filter: hue-rotate(-140deg) saturate(1.2); }
 
 
 /* ==========================================================================
@@ -1526,8 +1620,6 @@ kbd {
   .site-nav a[aria-current="true"]::after { left: auto; right: var(--s-4); bottom: 50%; transform: translateY(50%); width: 8px; height: 8px; }
   .site-header:has(.site-nav.is-open) { background: rgba(var(--bg-rgb), 0.97); border-color: var(--line); }
 
-  .hero-inner { grid-template-columns: 1fr; gap: var(--s-4); }
-  .hero-visual { order: -1; max-width: 340px; margin-bottom: calc(var(--s-6) * -1); }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stats li:nth-child(3) { border-left: 0; }
   .stats li:nth-child(n + 3) { border-top: 1px solid var(--line); }
@@ -1549,7 +1641,7 @@ kbd {
   .kbd-btn { display: none; }
 
   .hero { padding-top: calc(var(--header-h) + var(--s-4)); }
-  .hero-visual { max-width: 260px; }
+  .hero-head { --hv: min(220px, 46vw); }
   .hero-actions .btn { flex: 1 1 auto; }
   .stats li { padding: var(--s-4); }
 

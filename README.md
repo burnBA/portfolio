@@ -1,6 +1,6 @@
-# Bruno Alves — Portfolio
+# Bruno Alves · Portfolio
 
-Portfolio bilingue (FR / EN) — Cybersécurité, Systèmes & Réseaux.
+Portfolio bilingue (FR / EN) : Cybersécurité, Systèmes & Réseaux.
 En ligne : https://burnba.github.io/portfolio/
 
 HTML5 sémantique, CSS pur (variables), JavaScript vanilla. Aucun framework, aucune étape de build.
@@ -32,7 +32,7 @@ Un texte peut être une chaîne simple (identique dans les deux langues) ou un o
 ## Fonctionnalités
 
 - Objet en chrome liquide en WebGL qui réagit au curseur (repli CSS sans WebGL)
-- Schéma interactif de l'infrastructure du showroom HP
+- Schéma interactif de l'infrastructure (stage chez HP)
 - Parcours en timeline filtrable par domaine
 - Constellation des compétences
 - Palette de commandes : <kbd>Ctrl</kbd> + <kbd>K</kbd> (ou <kbd>/</kbd>)

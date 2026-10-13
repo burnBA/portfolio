@@ -1,5 +1,5 @@
 /* ==========================================================================
-   script.js — Bruno Alves · Portfolio
+   script.js · Bruno Alves · Portfolio
    --------------------------------------------------------------------------
    JavaScript vanilla, aucune dépendance. Le contenu vient de content.js.
 
@@ -92,12 +92,28 @@
 
     // Sélecteur de langue
     $$('.lang-switch [data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === state.lang)));
-    $('.wordmark').setAttribute('aria-label', state.lang === 'en' ? 'Bruno Alves — home' : 'Bruno Alves — accueil');
+    $('.wordmark').setAttribute('aria-label', state.lang === 'en' ? 'Bruno Alves, home' : 'Bruno Alves, accueil');
     const menuBtn = $('.menu-toggle');
     if (menuBtn) $('.visually-hidden', menuBtn).textContent = t(menuBtn.getAttribute('aria-expanded') === 'true' ? 'nav.close' : 'nav.menu');
 
     updateMotionButton();
+    updateThemeButton();
     renderAll();
+  }
+
+  /** Thème foncé (par défaut) ou clair, mémorisé si choisi par le visiteur. */
+  function setTheme(theme, persist) {
+    root.setAttribute('data-theme', theme);
+    if (persist) store.set('ba-theme', theme);
+    const meta = $('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#efeee9' : '#0a0a0c');
+    updateThemeButton();
+    chrome.onThemeChange();
+  }
+
+  function updateThemeButton() {
+    const btn = $('[data-toggle-theme]');
+    if (btn) btn.setAttribute('aria-label', t(root.dataset.theme === 'light' ? 'theme.toDark' : 'theme.toLight'));
   }
 
   /** Active / coupe les animations (mémorisé). */
@@ -230,7 +246,7 @@
            <text class="topo-sub" x="${x0 + 40}" y="${n.y + 14}">${esc(sub)}</text>`;
       return `
         <g class="${cls}" data-node="${n.id}" role="button" tabindex="0"
-           aria-pressed="${state.topoActive === n.id}" aria-label="${esc(label + ' — ' + sub)}">
+           aria-pressed="${state.topoActive === n.id}" aria-label="${esc(label + ', ' + sub)}">
           <rect x="${x0}" y="${y0}" width="${n.w}" height="${TOPO_H}" rx="12"/>
           ${inner}
         </g>`;
@@ -514,12 +530,12 @@
       const pos = {}; // position de chaque compétence, par libellé FR
       let out = `<defs>
           <linearGradient id="cst-chrome" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#8b93e8"/><stop offset="1" stop-color="#343da3"/>
+            <stop offset="0" style="stop-color: var(--cst-hub-a)"/><stop offset="1" style="stop-color: var(--cst-hub-b)"/>
           </linearGradient>
         </defs>`;
 
       // Repère central discret
-      out += `<g fill="none" stroke="rgba(29,28,34,.1)">
+      out += `<g class="cst-center" fill="none">
           <circle cx="${cx}" cy="${cy}" r="46"/><circle cx="${cx}" cy="${cy}" r="30" stroke-dasharray="2 5"/></g>`;
 
       const clusters = C.skills.map((g, gi) => {
@@ -562,7 +578,7 @@
 
       // Liens transversaux (en pointillés, sous les amas)
       const cross = this.cross.filter(([a, b]) => pos[a] && pos[b]).map(([a, b]) =>
-        `<line x1="${pos[a][0].toFixed(1)}" y1="${pos[a][1].toFixed(1)}" x2="${pos[b][0].toFixed(1)}" y2="${pos[b][1].toFixed(1)}" stroke="rgba(74,85,201,.14)" stroke-dasharray="2 5"/>`).join('');
+        `<line x1="${pos[a][0].toFixed(1)}" y1="${pos[a][1].toFixed(1)}" x2="${pos[b][0].toFixed(1)}" y2="${pos[b][1].toFixed(1)}" class="cst-bridge" stroke-dasharray="2 5"/>`).join('');
 
       svg.innerHTML = out + cross + clusters.join('');
       this.bindGroups();
@@ -708,6 +724,8 @@
           action: () => { this.close(); applyLanguage(state.lang === 'fr' ? 'en' : 'fr', true); } },
         { label: t('palette.copy'), icon: 'copy', kw: 'copier copy email mail', meta: C.links.email, action: () => { this.close(); copyEmail(); } },
         { label: t('palette.mail'), icon: 'mail', kw: 'email mail ecrire write', action: () => { this.close(); window.location.href = 'mailto:' + C.links.email; } },
+        { label: t(root.dataset.theme === 'light' ? 'theme.toDark' : 'theme.toLight'), icon: root.dataset.theme === 'light' ? 'moon' : 'sun', kw: 'theme theme sombre dark clair light couleurs colors mode',
+          action: () => { this.close(); setTheme(root.dataset.theme === 'light' ? 'dark' : 'light', true); } },
         { label: t('palette.motion'), icon: 'motion', kw: 'animations motion effets effects', action: () => { this.close(); setMotion(!state.motion, true); toast(t(state.motion ? 'toast.motion.on' : 'toast.motion.off')); } },
         { label: t('palette.top'), icon: 'arrow-up', kw: 'haut top accueil home', action: go('#hero') }
       ].map((c) => ({ group: 'palette.group.actions', ...c }));
@@ -789,9 +807,14 @@
   }
 
   /* ========================================================================
-     12. OBJET EN CHROME LIQUIDE — WebGL (raymarching de métaballes)
+     12. OBJET EN CHROME LIQUIDE · WebGL (raymarching)
      ------------------------------------------------------------------------
-     Trois sphères fusionnent (smooth-min) et une quatrième suit le curseur.
+     Un nuage de chrome déséquilibré, du nom jusqu'au bord droit du hero,
+     façon lampe à lave : trois amas qui tournent chacun à leur façon, des
+     gouttes qui montent, descendent et fusionnent ; l'ensemble dérive. Une
+     goutte suit le curseur et fusionne avec elle (smooth-min).
+     Le canvas couvre tout le hero, au-dessus du contenu : la goutte peut
+     survoler le texte, dans la zone définie par dropBounds().
      La surface reflète un « studio » procédural clair (bandes de lumière,
      softbox indigo) avec un très léger film iridescent sur les bords.
      Pause automatique hors écran / onglet masqué ; image fixe si animations
@@ -802,8 +825,14 @@
     visible: true,
     raf: 0,
     t0: performance.now(),
-    mouse: [0, 0],
-    target: [0, 0],
+    pointer: null,        // dernière position du curseur (px, coordonnées écran)
+    drop: [0, 0, 0, 0.1], // position lissée de la goutte (repère 3D) + rayon
+
+    // Projection du plan de la goutte (z = .55) : 1 unité 3D = K × côté du cadre
+    K: 3.4 / (10 - 0.55),
+    DROP_R: 0.24,
+    BAR_LEFT: -0.85,      // bout gauche de la barre (repère 3D, centre du cadre = 0)
+    seg: [-0.85, 1.6],    // extrémités gauche / droite, recalculées à chaque image
 
     VERT: 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}',
 
@@ -813,84 +842,229 @@
       #else
       precision mediump float;
       #endif
-      uniform vec2 uRes;
       uniform float uTime;
-      uniform vec4 uRot;          // cos/sin du lacet et du tangage
-      uniform vec3 uA, uB, uC, uM; // centres des métaballes (uM = curseur)
+      uniform vec3 uView;   // centre du cadre (px WebGL) + côté du cadre (px)
+      uniform vec4 uRot;    // cos/sin du roulis (rotation sur l'axe long) et du lacet
+      uniform float uTilt;  // léger tangage
+      uniform vec4 uM;      // centre de la goutte + rayon
+      uniform vec3 uOff;    // centre de la barre
+      uniform float uLen;   // demi-longueur de la barre
+      uniform float uDark;  // 1 = thème foncé (chrome miroir, reflets orange), 0 = clair
 
       float smin(float a, float b, float k) {
         float h = clamp(.5 + .5 * (b - a) / k, 0., 1.);
         return mix(b, a, h) - k * h * (1. - h);
       }
 
+      vec3 rx(vec3 p, float a) { float c = cos(a), s = sin(a); return vec3(p.x, c * p.y - s * p.z, s * p.y + c * p.z); }
+      vec3 ry(vec3 p, float a) { float c = cos(a), s = sin(a); return vec3(c * p.x + s * p.z, p.y, -s * p.x + c * p.z); }
+      vec3 rz(vec3 p, float a) { float c = cos(a), s = sin(a); return vec3(c * p.x - s * p.y, s * p.x + c * p.y, p.z); }
+
+      // Briques de la forme, en coordonnées normalisées (longueur = 2)
+      float B(vec3 q, vec3 c, float r) { return length(q - c) - r; }
+      float C(vec3 q, vec3 a, vec3 b, float r) {
+        vec3 pa = q - a, ba = b - a;
+        return length(pa - ba * clamp(dot(pa, ba) / dot(ba, ba), 0., 1.)) - r;
+      }
+
+      // Nuage de chrome façon lampe à lave, d'après le croquis : un corps
+      // allongé avec un doigt qui monte à gauche, des bosses sur le dessus,
+      // des lobes qui pendent au milieu et au bout droit, et des gouttes
+      // détachées qui flottent. Trois groupes tournent chacun autour d'un axe
+      // différent. Tout est dessiné en coordonnées normalisées (x de -1 à 1)
+      // puis remis à l'échelle de la longueur réelle.
+      float bar(vec3 p) {
+        float t = uTime;
+        vec3 n = p / uLen;
+        float k = .09, d;
+
+        // Groupe gauche : tourne autour de l'axe vertical
+        vec3 g = vec3(-.62, 0., 0.);
+        vec3 q = ry(n - g, .4 * sin(t * .3)) + g;
+        d = B(q, vec3(-.86, .01 + .02 * sin(t * .5), 0.), .14);
+        d = smin(d, B(q, vec3(-.62, .03, .03), .16 + .01 * sin(t * .7)), k);
+        d = smin(d, B(q, vec3(-.76, .15 + .02 * sin(t * .4), -.02), .09), k);
+        // Doigt qui monte, avec une tête qui ondule
+        vec3 tip = vec3(-.43 + .03 * sin(t * .35), .3 + .03 * sin(t * .45), 0.);
+        d = smin(d, C(q, vec3(-.45, .05, 0.), tip, .055), k);
+        d = smin(d, B(q, tip, .075 + .01 * sin(t * .9)), .06);
+
+        // Groupe central : tourne autour de l'axe horizontal
+        g = vec3(.1, 0., 0.);
+        q = rx(n - g, .5 * sin(t * .24 + 1.)) + g;
+        d = smin(d, B(q, vec3(-.3, -.01, -.03), .15), k);
+        d = smin(d, B(q, vec3(-.03, .0, .02), .14 + .01 * sin(t * .6 + 2.)), k);
+        d = smin(d, B(q, vec3(.1, .12 + .02 * sin(t * .5 + 1.), 0.), .09), k);
+        d = smin(d, B(q, vec3(.28, -.02, 0.), .13), k);
+        // Lobe qui pend sous le corps
+        vec3 low = vec3(.42, -.25 + .04 * sin(t * .3 + 2.), .02);
+        d = smin(d, C(q, vec3(.4, -.05, 0.), low, .045), k);
+        d = smin(d, B(q, low, .085), .06);
+
+        // Groupe droit : tourne de face
+        g = vec3(.72, 0., 0.);
+        q = rz(n - g, .22 * sin(t * .28 + 2.)) + g;
+        d = smin(d, B(q, vec3(.55, .02, 0.), .12), k);
+        d = smin(d, B(q, vec3(.62, .14 + .02 * sin(t * .55), .02), .09), k);
+        d = smin(d, B(q, vec3(.8, .01, 0.), .1), k);
+        // Lobe du bout droit, qui pend
+        vec3 end = vec3(.92, -.22 + .04 * sin(t * .33), 0.);
+        d = smin(d, C(q, vec3(.86, 0., 0.), end, .05), k);
+        d = smin(d, B(q, end, .095 + .01 * sin(t * .8)), .06);
+
+        // Gouttes libres : montent, descendent, se détachent et se recollent
+        d = smin(d, B(n, vec3(.42 + .03 * sin(t * .2), .27 + .07 * sin(t * .3 + 1.), 0.), .055), .07);
+        d = smin(d, B(n, vec3(-.58, -.26 + .06 * sin(t * .27 + 3.), .02), .05), .07);
+        d = smin(d, B(n, vec3(.9 + .02 * sin(t * .4), .2 + .06 * sin(t * .35 + 2.), 0.), .04), .06);
+
+        return d * uLen + .006 * sin(3.1 * p.x + t * 1.1) * sin(2.7 * p.y - t * .9) * sin(2.9 * p.z + t * .8);
+      }
+
       float map(vec3 p) {
-        float dm = length(p - uM) - .24;              // goutte attirée par le curseur
-        vec3 q = p;
-        q.xz = vec2(uRot.x * q.x - uRot.y * q.z, uRot.y * q.x + uRot.x * q.z);
-        q.yz = vec2(uRot.z * q.y - uRot.w * q.z, uRot.w * q.y + uRot.z * q.z);
-        float d = smin(length(q - uA) - .62, length(q - uB) - .5, .55);
-        d = smin(d, length(q - uC) - .42, .55);
-        d = smin(d, dm, .45);
-        d += .04 * sin(3.1 * q.x + uTime * 1.3) * sin(2.7 * q.y - uTime * 1.1) * sin(2.9 * q.z + uTime * .9);
-        return d;
+        vec3 q = p - uOff;
+        q.xz = vec2(uRot.w * q.x - uRot.z * q.z, uRot.z * q.x + uRot.w * q.z);
+        q.yz = vec2(cos(uTilt) * q.y - sin(uTilt) * q.z, sin(uTilt) * q.y + cos(uTilt) * q.z);
+        q.yz = vec2(uRot.x * q.y - uRot.y * q.z, uRot.y * q.y + uRot.x * q.z);
+        return smin(bar(q), length(p - uM.xyz) - uM.w, .4);
       }
 
+      // Normale par la méthode du tétraèdre : 4 évaluations, reflets nets
       vec3 nrm(vec3 p) {
-        vec2 e = vec2(.0015, 0.);
-        return normalize(vec3(map(p + e.xyy) - map(p - e.xyy),
-                              map(p + e.yxy) - map(p - e.yxy),
-                              map(p + e.yyx) - map(p - e.yyx)));
+        vec2 k = vec2(1., -1.) * .0008;
+        return normalize(k.xyy * map(p + k.xyy) + k.yyx * map(p + k.yyx) +
+                         k.yxy * map(p + k.yxy) + k.xxx * map(p + k.xxx));
       }
 
-      // Environnement « studio » procédural reflété par le chrome
-      vec3 env(vec3 r) {
+      // Intersection rayon / boîte englobante (centre c, demi-côtés h)
+      vec2 box(vec3 ro, vec3 rd, vec3 c, vec3 h) {
+        vec3 inv = 1. / rd;
+        vec3 t0 = (c - h - ro) * inv, t1 = (c + h - ro) * inv;
+        vec3 lo = min(t0, t1), hi = max(t0, t1);
+        float tn = max(max(lo.x, lo.y), lo.z), tf = min(min(hi.x, hi.y), hi.z);
+        return tn <= tf ? vec2(tn, tf) : vec2(1e5, -1e5);
+      }
+
+      // Intersection rayon / sphère englobante : (entrée, sortie), x > y si raté
+      vec2 bound(vec3 ro, vec3 rd, vec3 c, float r) {
+        vec3 oc = ro - c;
+        float b = dot(oc, rd), h = b * b - dot(oc, oc) + r * r;
+        if (h < 0.) return vec2(1e5, -1e5);
+        h = sqrt(h);
+        return vec2(-b - h, -b + h);
+      }
+
+      // Thème clair : studio reflété par le chrome miroir, en tons froids :
+      // sol gris-bleu sombre, horizon blanc tranché, bandes de lumière fines,
+      // softbox indigo et bande basse bleue, éclat principal serré
+      vec3 envLight(vec3 r) {
         float y = r.y;
-        vec3 col = mix(vec3(.36, .37, .45), vec3(.66, .67, .76), smoothstep(-.7, .05, y));
-        col += vec3(.6, .6, .68) * smoothstep(.12, 0., abs(y + .5)) * .5;   // bande basse argentée
-        col = mix(col, vec3(.97, .97, .99), smoothstep(-.02, .32, y) * .9);
-        col = mix(col, vec3(.42, .43, .53), smoothstep(.45, 1., y) * .8);
-        col += vec3(1.) * smoothstep(.05, 0., abs(y + .02)) * .4;
-        col += vec3(.38, .44, 1.) * pow(max(dot(r, normalize(vec3(-.9, .2, .45))), 0.), 6.) * .7;
-        col += vec3(.75, .85, 1.) * pow(max(dot(r, normalize(vec3(.95, -.35, .3))), 0.), 9.) * .5;
-        col += vec3(1.) * pow(max(dot(r, normalize(vec3(.35, .8, .6))), 0.), 70.) * 2.;
+        vec3 col = mix(vec3(.1, .11, .16), vec3(.42, .43, .52), smoothstep(-.9, -.04, y));
+        col = mix(col, vec3(.98, .98, 1.), smoothstep(-.012, .03, y));        // horizon tranché
+        col = mix(col, vec3(.62, .63, .72), smoothstep(.08, .4, y));
+        col = mix(col, vec3(.24, .25, .33), smoothstep(.4, .95, y));          // ciel profond
+        col += vec3(1.) * smoothstep(.025, 0., abs(y - .52)) * .9;            // bandes de lumière
+        col += vec3(1.) * smoothstep(.018, 0., abs(y - .3)) * .45;
+        col += vec3(1.) * smoothstep(.015, 0., abs(y + .28)) * .35;
+        col += vec3(.35, .42, 1.) * smoothstep(.1, 0., abs(y + .52)) * .6;     // bande basse bleue
+        col += vec3(.38, .44, 1.) * pow(max(dot(r, normalize(vec3(-.9, .15, .45))), 0.), 7.) * 1.1;
+        col += vec3(.75, .85, 1.) * pow(max(dot(r, normalize(vec3(.95, -.35, .3))), 0.), 12.) * .45;
+        // Éclat principal : un cœur très serré sur une tache plus douce
+        float k = max(dot(r, normalize(vec3(.35, .8, .6))), 0.);
+        col += vec3(1.) * (pow(k, 30.) * .4 + pow(k, 260.) * 3.5);
         return col;
       }
 
+      // Thème foncé : studio reflété par le chrome miroir : sol sombre, horizon
+      // blanc très net, bandes de lumière fines, ciel gris profond, softbox et
+      // bande basse orange, éclat principal serré. Des zones claires et
+      // sombres bien tranchées donnent l'effet miroir poli.
+      vec3 envDark(vec3 r) {
+        float y = r.y;
+        vec3 col = mix(vec3(.05, .05, .06), vec3(.36, .36, .4), smoothstep(-.9, -.04, y));
+        col = mix(col, vec3(.97, .97, .99), smoothstep(-.012, .03, y));       // horizon tranché
+        col = mix(col, vec3(.55, .55, .6), smoothstep(.08, .4, y));
+        col = mix(col, vec3(.12, .12, .14), smoothstep(.4, .95, y));          // ciel profond
+        col += vec3(1.) * smoothstep(.025, 0., abs(y - .52)) * .9;            // bandes de lumière
+        col += vec3(1.) * smoothstep(.018, 0., abs(y - .3)) * .45;
+        col += vec3(1.) * smoothstep(.015, 0., abs(y + .28)) * .35;
+        col += vec3(1., .42, .1) * smoothstep(.1, 0., abs(y + .52)) * .75;     // bande basse orange
+        col += vec3(1., .45, .12) * pow(max(dot(r, normalize(vec3(-.9, .15, .45))), 0.), 7.) * 1.5;
+        col += vec3(1., .72, .48) * pow(max(dot(r, normalize(vec3(.95, -.35, .3))), 0.), 12.) * .45;
+        // Éclat principal : un cœur très serré sur une tache plus douce
+        float k = max(dot(r, normalize(vec3(.35, .8, .6))), 0.);
+        col += vec3(1.) * (pow(k, 30.) * .4 + pow(k, 260.) * 3.5);
+        return col;
+      }
+
+      // Rendu du chrome en un point
+      vec3 shade(vec3 p, vec3 rd) {
+        vec3 n = nrm(p);
+        vec3 r = reflect(rd, n);
+        float fres = pow(1. - max(dot(n, -rd), 0.), 3.);
+        vec3 iri = .55 + .45 * cos(6.2831 * (vec3(0., .33, .67) + fres * 1.4 + uTime * .04));
+        vec3 col;
+        if (uDark > .5) {
+          // Foncé : chrome miroir, réflexion quasi totale, liseré orange
+          col = envDark(r) * mix(.88, 1.05, fres) + vec3(.015);
+          col = mix(col, col * iri * 1.2, .05 * fres);
+          col += vec3(1., .42, .1) * pow(fres, 4.) * .3;
+          col = clamp(col, 0., 1.3);
+          return mix(col, col * col * (3. - 2. * min(col, 1.)), .45);
+        }
+        // Clair : chrome miroir, reflets bleus, liseré indigo
+        col = envLight(r) * mix(.88, 1.05, fres) + vec3(.015);
+        col = mix(col, col * iri * 1.2, .05 * fres);
+        col += vec3(.29, .33, .79) * pow(fres, 4.) * .3;
+        col = clamp(col, 0., 1.3);
+        return mix(col, col * col * (3. - 2. * min(col, 1.)), .45);
+      }
+
       void main() {
-        vec2 uv = (gl_FragCoord.xy - .5 * uRes) / uRes.y;
-        vec3 ro = vec3(0., 0., 3.9);
-        vec3 rd = normalize(vec3(uv, -1.25));
-        float t = 2., minD = 9.;
+        vec2 uv = (gl_FragCoord.xy - uView.xy) / uView.z;
+        // Caméra éloignée, focale longue : peu de déformation sur les bords,
+        // la goutte reste ronde même loin de l'objet
+        vec3 ro = vec3(0., 0., 10.);
+        vec3 rd = normalize(vec3(uv, -3.4));
+
+        // On ne calcule que les pixels proches de la barre ou de la goutte :
+        // le canvas couvre tout le hero, le reste est transparent.
+        vec2 b1 = box(ro, rd, uOff, vec3(uLen * 1.05 + .5, uLen * .42 + .5, uLen * .3 + .5));
+        vec2 b2 = bound(ro, rd, uM.xyz, uM.w + .5);
+        float t = min(b1.x, b2.x), tEnd = max(b1.y, b2.y);
+        if (t > tEnd) { gl_FragColor = vec4(0.); return; }
+        t = max(t, 0.);
+
+        float minD = 9., tMin = t;
         bool hit = false;
-        for (int i = 0; i < 72; i++) {
+        for (int i = 0; i < 130; i++) {
           vec3 p = ro + rd * t;
           float d = map(p);
-          minD = min(minD, d);
-          if (d < .0012) { hit = true; break; }
-          t += d;
-          if (t > 6.) break;
+          if (d < minD) { minD = d; tMin = t; }
+          if (d < .0015) { hit = true; break; }
+          t += d * .8;    // pas réduit : torsions et ondulations déforment le champ
+          if (t > tEnd) break;
         }
+        // Taille d'un pixel à la distance de l'objet : sert à lisser les bords
+        float px = 1.5 * t / (3.4 * uView.z);
         if (hit) {
-          vec3 p = ro + rd * t;
-          vec3 n = nrm(p);
-          vec3 r = reflect(rd, n);
-          float fres = pow(1. - max(dot(n, -rd), 0.), 2.4);
-          vec3 col = env(r) * (.82 + .25 * fres) + vec3(.04, .04, .05);
-          vec3 iri = .55 + .45 * cos(6.2831 * (vec3(0., .33, .67) + fres * 1.4 + uTime * .04));
-          col = mix(col, col * iri * 1.3, .18 * fres);
-          col += vec3(.29, .33, .79) * pow(fres, 4.) * .25;
-          gl_FragColor = vec4(col, 1.);
+          gl_FragColor = vec4(shade(ro + rd * t, rd), 1.);
         } else {
-          // Halo indigo très léger autour de l'objet (alpha prémultiplié)
-          float g = exp(-minD * 7.) * .16;
-          gl_FragColor = vec4(vec3(.29, .33, .79) * g, g);
+          // Halo très léger autour de l'objet : indigo en clair, orange en foncé
+          float g = exp(-minD * 7.) * mix(.16, .18, uDark);
+          vec4 halo = vec4(mix(vec3(.29, .33, .79), vec3(1., .45, .14), uDark) * g, g);
+          // Silhouette anticrénelée : le rayon a frôlé la surface de moins
+          // d'un pixel, on mélange le chrome au halo selon la couverture
+          float cover = 1. - smoothstep(0., px, minD);
+          if (cover > 0.) halo = mix(halo, vec4(shade(ro + rd * tMin, rd), 1.), cover);
+          gl_FragColor = halo;
         }
       }`,
 
     init() {
+      this.hero = $('.hero');
       this.wrap = $('.hero-visual');
       this.canvas = $('#chrome-canvas');
-      if (!this.canvas) return;
+      if (!this.canvas || !this.wrap) return;
       const gl = this.canvas.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false, powerPreference: 'low-power' });
       if (!gl) return; // le repli CSS reste affiché
       this.gl = gl;
@@ -917,26 +1091,24 @@
       gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
       this.u = {};
-      ['uRes', 'uTime', 'uRot', 'uA', 'uB', 'uC', 'uM'].forEach((n) => { this.u[n] = gl.getUniformLocation(prog, n); });
+      ['uTime', 'uView', 'uRot', 'uTilt', 'uM', 'uOff', 'uLen', 'uDark'].forEach((n) => { this.u[n] = gl.getUniformLocation(prog, n); });
 
       this.resize();
-      window.addEventListener('resize', () => { this.resize(); if (!this.running) this.draw(this.now()); });
+      const onResize = () => { this.resize(); if (!this.running) this.draw(this.now()); };
+      window.addEventListener('resize', onResize);
+      if ('ResizeObserver' in window) new ResizeObserver(onResize).observe(this.hero);
 
       // Le curseur (ou le doigt) attire une goutte de chrome
-      window.addEventListener('pointermove', (e) => {
-        const r = this.wrap.getBoundingClientRect();
-        this.target = [
-          clamp(((e.clientX - r.left) / r.width) * 2 - 1, -1.4, 1.4),
-          clamp(-(((e.clientY - r.top) / r.height) * 2 - 1), -1.4, 1.4)
-        ];
-      }, { passive: true });
+      window.addEventListener('pointermove', (e) => { this.pointer = [e.clientX, e.clientY]; }, { passive: true });
 
       if ('IntersectionObserver' in window) {
-        new IntersectionObserver(([e]) => { this.visible = e.isIntersecting; this.onMotionChange(); }).observe(this.wrap);
+        new IntersectionObserver(([e]) => { this.visible = e.isIntersecting; this.onMotionChange(); }).observe(this.canvas);
       }
       document.addEventListener('visibilitychange', () => this.onMotionChange());
 
+      this.drop = this.restDrop();
       this.draw(this.now());
+      this.canvas.classList.add('is-ready');
       this.wrap.classList.add('webgl-ready');
       this.onMotionChange();
     },
@@ -947,26 +1119,64 @@
       const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
       const size = this.canvas.getBoundingClientRect();
       // Plafond de pixels pour rester fluide sur les petites machines
-      const scale = Math.min(dpr, 820 / Math.max(size.width, 1));
+      const scale = Math.min(dpr, Math.sqrt(2.4e6 / Math.max(size.width * size.height, 1)));
       this.canvas.width = Math.max(1, Math.round(size.width * scale));
       this.canvas.height = Math.max(1, Math.round(size.height * scale));
       this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     },
 
+    /** Au repos, la goutte se fond dans la barre, près de son bout gauche. */
+    restDrop() { return [this.seg[0] + 0.45, 0.05, 0, 0.1]; },
+
+    /**
+     * Zone où la goutte peut aller (px écran) : du bord gauche du contenu au
+     * bord droit du hero, du haut du hero jusqu'aux boutons d'action.
+     */
+    dropBounds(c) {
+      const inner = $('.hero-inner').getBoundingClientRect();
+      const actions = $('.hero-actions');
+      const bottom = actions ? actions.getBoundingClientRect().bottom : c.bottom;
+      return { left: inner.left - 24, right: c.right - 16, top: c.top + 8, bottom: Math.min(bottom, c.bottom) };
+    },
+
     draw(time) {
       const gl = this.gl, u = this.u;
-      // Lissage du curseur (inertie « liquide »)
-      this.mouse[0] += (this.target[0] - this.mouse[0]) * 0.06;
-      this.mouse[1] += (this.target[1] - this.mouse[1]) * 0.06;
-      const [mx, my] = state.motion ? this.mouse : [0.35, 0.2];
-      const yaw = mx * 0.6 + time * 0.15, pitch = -my * 0.45;
-      gl.uniform2f(u.uRes, this.canvas.width, this.canvas.height);
+      const c = this.canvas.getBoundingClientRect(), w = this.wrap.getBoundingClientRect();
+      const k = this.canvas.width / Math.max(c.width, 1);
+      const cx = w.left + w.width / 2, cy = w.top + w.height / 2, side = w.height;
+
+      // La barre part de BAR_LEFT et s'étend jusqu'au bord droit du hero
+      const right = (c.right - 28 - cx) / side / this.K;
+      this.seg = [this.BAR_LEFT, Math.max(right, this.BAR_LEFT + 1.2)];
+      const [xl, xr] = this.seg;
+
+      // Cible de la goutte : sous le curseur, bornée à la zone autorisée
+      // (marge = rayon de la goutte, pour qu'elle ne soit jamais coupée)
+      let target = this.restDrop();
+      if (this.pointer && state.motion) {
+        const b = this.dropBounds(c), rad = this.DROP_R * this.K * side * 1.15;
+        const px = clamp(this.pointer[0], b.left + rad, b.right - rad);
+        const py = clamp(this.pointer[1], b.top + rad, b.bottom - rad);
+        const x = (px - cx) / side / this.K, y = -(py - cy) / side / this.K;
+        // Près de la barre, la goutte rentre dans la matière et rétrécit
+        const near = Math.hypot(Math.max(xl - x, 0, x - xr), y);
+        const away = clamp((near - 0.25) / 0.6, 0, 1);
+        target = [x, y, 0.55 * away, 0.1 + (this.DROP_R - 0.1) * away];
+      }
+      for (let i = 0; i < 4; i++) this.drop[i] += (target[i] - this.drop[i]) * 0.08;
+
+      // Rotation lente sur l'axe long + léger balancement
+      // Rotation lente sur l'axe long, léger balancement et dérive dans l'espace
+      const roll = Math.sin(time * 0.14) * 0.12, yaw = Math.sin(time * 0.17) * 0.1, tilt = Math.sin(time * 0.13 + 1) * 0.12;
+      const driftX = Math.sin(time * 0.11) * 0.08, driftY = Math.sin(time * 0.19 + 2) * 0.12;
+      gl.uniform3f(u.uView, (cx - c.left) * k, (c.bottom - cy) * k, side * k);
       gl.uniform1f(u.uTime, time);
-      gl.uniform4f(u.uRot, Math.cos(yaw), Math.sin(yaw), Math.cos(pitch), Math.sin(pitch));
-      gl.uniform3f(u.uA, Math.sin(time * 0.7) * 0.42, Math.cos(time * 0.9) * 0.28, Math.sin(time * 0.5) * 0.2);
-      gl.uniform3f(u.uB, -Math.cos(time * 0.6 + 1) * 0.48, Math.sin(time * 0.8 + 2) * 0.36, Math.cos(time * 0.7) * 0.25);
-      gl.uniform3f(u.uC, Math.sin(time * 0.5 + 4) * 0.3, -Math.sin(time * 0.6) * 0.45, Math.cos(time * 0.9 + 1) * 0.3);
-      gl.uniform3f(u.uM, mx * 0.95, my * 0.85, 0.55);
+      gl.uniform4f(u.uRot, Math.cos(roll), Math.sin(roll), Math.sin(yaw), Math.cos(yaw));
+      gl.uniform1f(u.uTilt, tilt);
+      gl.uniform4f(u.uM, ...this.drop);
+      gl.uniform3f(u.uOff, (xl + xr) / 2 + driftX, driftY, 0);
+      gl.uniform1f(u.uLen, (xr - xl) / 2);
+      gl.uniform1f(u.uDark, root.dataset.theme === 'light' ? 0 : 1);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     },
 
@@ -976,18 +1186,23 @@
       this.raf = requestAnimationFrame(() => this.loop());
     },
 
+    /** Redessine l'image fixe après un changement de thème. */
+    onThemeChange() {
+      if (this.gl && !this.running) this.draw(this.now());
+    },
+
     /** Démarre ou arrête la boucle selon visibilité et préférence d'animation. */
     onMotionChange() {
       if (!this.gl) return;
       const shouldRun = state.motion && this.visible && !document.hidden;
       if (shouldRun && !this.running) { this.running = true; this.loop(); }
       else if (!shouldRun && this.running) { this.running = false; cancelAnimationFrame(this.raf); }
-      if (!state.motion) this.draw(this.now()); // image fixe soignée
+      if (!state.motion) { this.drop = this.restDrop(); this.draw(this.now()); } // image fixe soignée
     }
   };
 
   /* ========================================================================
-     13. EASTER EGGS — pour les profils techniques
+     13. EASTER EGGS · pour les profils techniques
      ======================================================================== */
   const terminal = {
     /** Renvoie une fonction produisant la sortie si la saisie est une commande connue. */
@@ -1003,8 +1218,8 @@
         ping: () => `PING bruno (git.swiss)\n${t('egg.ping')}\n--- 1 packet transmitted, 1 received, 0% packet loss ---`,
         ls: () => ['about/', 'experience/', 'projects/', 'skills/', 'languages/', 'contact/'].join('   '),
         nmap: () => (fr
-          ? `Starting Nmap ( https://nmap.org )\nNmap scan report for bruno.alves (Genève, CH)\nHost is up — disponible pour une alternance.\n\nPORT      STATE     SERVICE     VERSION\n53/tcp    open      domain      AD DS · DNS · DHCP · GPO\n88/tcp    open      kerberos    durcissement AD · Tiering Model\n443/tcp   open      https       Entra ID · Intune · Microsoft 365\n3389/tcp  filtered  ms-wbt      bloqué par OPNsense, comme il se doit\n8006/tcp  open      proxmox     Proxmox VE (≈150 VM migrées)\n\nService Info: Langues: pt, fr, en, es, it\nNmap done: 1 IP address (1 host up)`
-          : `Starting Nmap ( https://nmap.org )\nNmap scan report for bruno.alves (Geneva, CH)\nHost is up — available for a work-study position.\n\nPORT      STATE     SERVICE     VERSION\n53/tcp    open      domain      AD DS · DNS · DHCP · GPO\n88/tcp    open      kerberos    AD hardening · Tiering Model\n443/tcp   open      https       Entra ID · Intune · Microsoft 365\n3389/tcp  filtered  ms-wbt      blocked by OPNsense, as it should be\n8006/tcp  open      proxmox     Proxmox VE (≈150 VMs migrated)\n\nService Info: Languages: pt, fr, en, es, it\nNmap done: 1 IP address (1 host up)`)
+          ? `Starting Nmap ( https://nmap.org )\nNmap scan report for bruno.alves (Genève, CH)\nHost is up, disponible pour une alternance.\n\nPORT      STATE     SERVICE     VERSION\n53/tcp    open      domain      AD DS · DNS · DHCP · GPO\n88/tcp    open      kerberos    durcissement AD · Tiering Model\n443/tcp   open      https       Entra ID · Intune · Microsoft 365\n3389/tcp  filtered  ms-wbt      bloqué par OPNsense, comme il se doit\n8006/tcp  open      proxmox     Proxmox VE (≈150 VM migrées)\n\nService Info: Langues: pt, fr, en, es, it\nNmap done: 1 IP address (1 host up)`
+          : `Starting Nmap ( https://nmap.org )\nNmap scan report for bruno.alves (Geneva, CH)\nHost is up, available for a work-study position.\n\nPORT      STATE     SERVICE     VERSION\n53/tcp    open      domain      AD DS · DNS · DHCP · GPO\n88/tcp    open      kerberos    AD hardening · Tiering Model\n443/tcp   open      https       Entra ID · Intune · Microsoft 365\n3389/tcp  filtered  ms-wbt      blocked by OPNsense, as it should be\n8006/tcp  open      proxmox     Proxmox VE (≈150 VMs migrated)\n\nService Info: Languages: pt, fr, en, es, it\nNmap done: 1 IP address (1 host up)`)
       };
       return map[cmd] || null;
     }
@@ -1057,6 +1272,10 @@
     // Copie de l'e-mail
     $$('[data-copy-email]').forEach((b) => b.addEventListener('click', copyEmail));
 
+    // Bouton de thème (en-tête)
+    const themeBtn = $('[data-toggle-theme]');
+    if (themeBtn) themeBtn.addEventListener('click', () => setTheme(root.dataset.theme === 'light' ? 'dark' : 'light', true));
+
     // Bouton d'animations (pied de page)
     const motionBtn = $('[data-toggle-motion]');
     if (motionBtn) motionBtn.addEventListener('click', () => {
@@ -1072,6 +1291,7 @@
     const year = $('#year');
     if (year) year.textContent = new Date().getFullYear();
 
+    setTheme(root.dataset.theme === 'light' ? 'light' : 'dark', false);
     applyLanguage(state.lang, false); // rendu complet dans la langue mémorisée
     chrome.init();
 

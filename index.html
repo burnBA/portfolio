@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bruno Alves — Cybersécurité, Systèmes &amp; Réseaux</title>
+  <title>Bruno Alves | Cybersécurité, Systèmes &amp; Réseaux</title>
   <meta name="description" content="Bruno Alves, étudiant Bachelor Cybersécurité, Systèmes &amp; Réseaux au GIT (Genève). Sécurité Active Directory, pentest, Blue Team, infrastructure et durcissement. Disponible pour une alternance à Genève.">
   <meta name="author" content="Bruno Alves">
-  <meta name="theme-color" content="#f8f7f4">
-  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#0a0a0c">
+  <meta name="color-scheme" content="dark light">
   <link rel="canonical" href="https://burnba.github.io/portfolio/">
 
   <!-- Open Graph / aperçu de partage (LinkedIn, Teams, messageries…) -->
@@ -16,28 +16,34 @@
   <meta property="og:site_name" content="Bruno Alves">
   <meta property="og:locale" content="fr_CH">
   <meta property="og:locale:alternate" content="en_GB">
-  <meta property="og:title" content="Bruno Alves — Cybersécurité, Systèmes &amp; Réseaux">
+  <meta property="og:title" content="Bruno Alves | Cybersécurité, Systèmes &amp; Réseaux">
   <meta property="og:description" content="Étudiant Bachelor au GIT · AD Security, pentest, Blue Team, infrastructure &amp; durcissement. Disponible pour une alternance à Genève.">
   <meta property="og:image" content="https://burnba.github.io/portfolio/assets/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Bruno Alves — Cybersécurité, Systèmes &amp; Réseaux">
+  <meta property="og:image:alt" content="Bruno Alves | Cybersécurité, Systèmes &amp; Réseaux">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
   <!-- Polices Google Fonts (3 au total) :
-       Instrument Sans (titres et texte), JetBrains Mono (détails techniques) -->
+       Instrument Serif (nom), Instrument Sans (titres et texte), JetBrains Mono (détails techniques) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap">
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- Avant le premier rendu : JS actif + langue et préférence d'animation mémorisées
+  <!-- Avant le premier rendu : JS actif + thème, langue et préférence d'animation mémorisés
        (évite un « flash » de la mauvaise langue). Accès au stockage protégé par try/catch. -->
   <script>
     document.documentElement.classList.replace('no-js', 'js');
+    // Thème : foncé par défaut, choix du visiteur mémorisé
+    (function () {
+      var theme = null;
+      try { theme = localStorage.getItem('ba-theme'); } catch (e) {}
+      document.documentElement.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+    })();
     try {
       if (localStorage.getItem('ba-lang') === 'en') document.documentElement.lang = 'en';
     } catch (e) { /* stockage indisponible : valeurs par défaut */ }
@@ -55,7 +61,7 @@
 
 <body>
   <!-- =====================================================================
-       SPRITE D'ICÔNES — un seul langage visuel : 24 × 24, trait 1.6, arrondi.
+       SPRITE D'ICÔNES · un seul langage visuel : 24 × 24, trait 1.6, arrondi.
        Utilisation : <svg class="icon"><use href="#i-nom"/></svg>
        ===================================================================== -->
   <svg class="sprite" aria-hidden="true" focusable="false">
@@ -93,6 +99,8 @@
     <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12.5h18"/></symbol>
     <symbol id="i-motion" viewBox="0 0 24 24"><path d="M3 12h3l2.5-6 4 12 3-9 1.5 3H21"/></symbol>
     <symbol id="i-language" viewBox="0 0 24 24"><path d="M4 5h8M8 3v2m2.5 0c-.8 4-3.4 7.2-6.5 8.5M6 8.5c.9 2 2.6 3.6 4.5 4.5M12.5 21l4-10 4 10M14 17.5h5"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></symbol>
     <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 2.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5Z"/></symbol>
   </svg>
 
@@ -102,12 +110,12 @@
   <div class="scroll-progress" aria-hidden="true"><span></span></div>
 
   <!-- =====================================================================
-       EN-TÊTE — mot-symbole typographique (pas de logo), navigation,
+       EN-TÊTE · mot-symbole typographique (pas de logo), navigation,
        palette de commandes et sélecteur de langue.
        ===================================================================== -->
   <header class="site-header">
     <div class="header-inner container">
-      <a class="wordmark" href="#hero" aria-label="Bruno Alves — accueil">
+      <a class="wordmark" href="#hero" aria-label="Bruno Alves, accueil">
         <span class="wordmark-name">Bruno Alves</span>
         <span class="wordmark-tag mono" aria-hidden="true">cyber/sys/net</span>
       </a>
@@ -129,6 +137,11 @@
           <span class="mono kbd-label"><kbd>Ctrl</kbd><kbd>K</kbd></span>
         </button>
 
+        <button class="theme-toggle" type="button" data-toggle-theme aria-label="Passer en thème clair">
+          <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+          <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+        </button>
+
         <div class="lang-switch" role="group" aria-label="Langue du site" data-i18n-attr="aria-label:lang.label">
           <button type="button" data-lang="fr" aria-pressed="true" lang="fr" title="Français">FR</button>
           <button type="button" data-lang="en" aria-pressed="false" lang="en" title="English">EN</button>
@@ -145,17 +158,27 @@
   <main id="main" tabindex="-1">
 
     <!-- ===================================================================
-         HERO — objet en chrome liquide (WebGL) + accroche
+         HERO · objet en chrome liquide (WebGL) + accroche
          =================================================================== -->
     <section class="hero" id="hero" aria-labelledby="hero-title">
       <div class="hero-grid-bg" aria-hidden="true"></div>
+      <!-- Canvas WebGL sur tout le hero : l'objet chrome est calé sur .hero-visual,
+           la goutte qui suit le curseur peut survoler le texte -->
+      <canvas class="chrome-canvas" id="chrome-canvas" aria-hidden="true"></canvas>
 
       <div class="container hero-inner">
         <div class="hero-copy">
           <p class="eyebrow mono reveal" data-i18n="hero.eyebrow">Cybersécurité · Systèmes &amp; Réseaux</p>
-          <h1 class="hero-title reveal" id="hero-title"><span class="chrome-text">Bruno<br>Alves</span></h1>
+          <!-- Nom + objet chrome côte à côte. .hero-visual sert de repère au canvas ;
+               le .blob-fallback (CSS pur) reste visible si WebGL est indisponible. -->
+          <div class="hero-head">
+            <h1 class="hero-title reveal" id="hero-title"><span class="hero-name chrome-text">Bruno</span> <span class="hero-name chrome-text">Alves</span></h1>
+            <div class="hero-visual" aria-hidden="true">
+              <div class="blob-fallback"></div>
+            </div>
+          </div>
           <p class="hero-role reveal" data-i18n="hero.role">Étudiant Bachelor Cybersécurité, Systèmes &amp; Réseaux · Infrastructure &amp; durcissement</p>
-          <p class="hero-lede reveal" data-i18n="hero.lede">Étudiant en cybersécurité, déjà éprouvé sur le terrain : infrastructure en production, support en organisation internationale, sécurité de sites sensibles.</p>
+          <p class="hero-lede reveal" data-i18n="hero.lede">Je suis en Bachelor de cybersécurité à Genève. En parallèle, j'ai travaillé sur une infrastructure en production, fait du support au CIO et passé quatre ans dans la sécurité.</p>
 
           <p class="status-pill reveal">
             <span class="status-dot" aria-hidden="true"></span>
@@ -173,13 +196,6 @@
             </a>
           </div>
         </div>
-
-        <!-- Objet chrome : canvas WebGL. Le .blob-fallback (CSS pur) reste visible
-             si WebGL est indisponible. -->
-        <div class="hero-visual" aria-hidden="true">
-          <div class="blob-fallback"></div>
-          <canvas class="chrome-canvas" id="chrome-canvas"></canvas>
-        </div>
       </div>
 
       <!-- Chiffres clés : compris en un coup d'œil par un recruteur non technique -->
@@ -194,20 +210,20 @@
     </section>
 
     <!-- ===================================================================
-         01 — À PROPOS
+         01 · À PROPOS
          =================================================================== -->
     <section class="section" id="about" aria-labelledby="about-title">
       <div class="container">
         <header class="section-head reveal">
-          <p class="kicker mono" data-i18n="about.kicker">01 — À propos</p>
-          <h2 class="section-title" id="about-title" data-i18n="about.title">Du terrain à la théorie, et retour.</h2>
+          <p class="kicker mono" data-i18n="about.kicker">01 · À propos</p>
+          <h2 class="section-title" id="about-title" data-i18n="about.title">En quelques mots</h2>
         </header>
 
         <div class="about-grid">
           <div class="about-text reveal">
-            <p class="about-lead" data-i18n="about.p1">Je fais le lien entre la théorie du Bachelor et les environnements réels. Au showroom HP, j'ai migré environ 150 machines virtuelles et segmenté le réseau en production, sans aucune perte de données. Au siège du CIO, j'ai assuré le support de quelque 600 collaborateurs.</p>
-            <p data-i18n="about.p2">Quatre années de sécurité physique sur des sites sensibles m'ont donné ce que les manuels n'enseignent pas : le réflexe de la gestion d'incident et le sang-froid.</p>
-            <p data-i18n="about.p3">Polyvalent et autonome, je me spécialise en cybersécurité (sécurité Active Directory, pentest, Blue Team, durcissement) tout en restant opérationnel sur l'infrastructure, le réseau et le support.</p>
+            <p class="about-lead" data-i18n="about.p1">Pendant mon stage chez HP, j'ai migré environ 150 machines virtuelles et segmenté le réseau, en production et sans perdre de données. Au siège du CIO, je faisais le support pour environ 600 collaborateurs.</p>
+            <p data-i18n="about.p2">J'ai aussi travaillé quatre ans comme agent de sécurité sur des sites sensibles. J'y ai appris à gérer des incidents et à garder mon calme quand la situation se tend.</p>
+            <p data-i18n="about.p3">Aujourd'hui je me spécialise en cybersécurité (sécurité Active Directory, pentest, Blue Team, durcissement), mais je reste à l'aise sur l'infrastructure, le réseau et le support.</p>
           </div>
 
           <dl class="facts card reveal">
@@ -225,7 +241,7 @@
             </div>
             <div class="fact">
               <dt class="mono" data-i18n="about.fact.seeking">Recherche</dt>
-              <dd data-i18n="about.fact.seeking.v">Alternance à Genève · sur site, hybride ou à distance</dd>
+              <dd data-i18n="about.fact.seeking.v">Alternance à Genève, sur site, en hybride ou à distance</dd>
             </div>
           </dl>
         </div>
@@ -233,14 +249,14 @@
     </section>
 
     <!-- ===================================================================
-         02 — PARCOURS (timeline construite depuis content.js)
+         02 · PARCOURS (timeline construite depuis content.js)
          =================================================================== -->
     <section class="section" id="experience" aria-labelledby="exp-title">
       <div class="container">
         <header class="section-head reveal">
-          <p class="kicker mono" data-i18n="exp.kicker">02 — Parcours</p>
-          <h2 class="section-title" id="exp-title" data-i18n="exp.title">Des environnements réels, en production.</h2>
-          <p class="section-intro" data-i18n="exp.intro">Du plus récent au plus ancien. Filtrez par domaine pour aller à l'essentiel.</p>
+          <p class="kicker mono" data-i18n="exp.kicker">02 · Parcours</p>
+          <h2 class="section-title" id="exp-title" data-i18n="exp.title">Mon parcours</h2>
+          <p class="section-intro" data-i18n="exp.intro">Du plus récent au plus ancien. Vous pouvez filtrer par domaine.</p>
         </header>
 
         <div class="filters reveal" role="group" aria-label="Filtrer le parcours par domaine" data-i18n-attr="aria-label:exp.filter.label">
@@ -260,14 +276,14 @@
     </section>
 
     <!-- ===================================================================
-         03 — PROJETS (cartes + topologie interactive)
+         03 · PROJETS (cartes + topologie interactive)
          =================================================================== -->
     <section class="section" id="projects" aria-labelledby="proj-title">
       <div class="container">
         <header class="section-head reveal">
-          <p class="kicker mono" data-i18n="proj.kicker">03 — Projets</p>
-          <h2 class="section-title" id="proj-title" data-i18n="proj.title">Ce que j'ai construit et sécurisé.</h2>
-          <p class="section-intro" data-i18n="proj.intro">Projets réalisés en stage ou dans mon lab. Dépliez une carte pour le détail.</p>
+          <p class="kicker mono" data-i18n="proj.kicker">03 · Projets</p>
+          <h2 class="section-title" id="proj-title" data-i18n="proj.title">Quelques projets</h2>
+          <p class="section-intro" data-i18n="proj.intro">Des projets faits en stage ou dans mon lab. Ouvrez une carte pour voir le détail.</p>
         </header>
 
         <div class="projects-grid" id="projects-grid"><!-- rempli par script.js --></div>
@@ -275,14 +291,14 @@
     </section>
 
     <!-- ===================================================================
-         04 — COMPÉTENCES (constellation + catégories lisibles)
+         04 · COMPÉTENCES (constellation + catégories lisibles)
          =================================================================== -->
     <section class="section" id="skills" aria-labelledby="skills-title">
       <div class="container">
         <header class="section-head reveal">
-          <p class="kicker mono" data-i18n="skills.kicker">04 — Compétences</p>
-          <h2 class="section-title" id="skills-title" data-i18n="skills.title">Une boîte à outils orientée infra et sécurité.</h2>
-          <p class="section-intro" data-i18n="skills.intro">Survolez ou sélectionnez un domaine pour l'éclairer dans la constellation.</p>
+          <p class="kicker mono" data-i18n="skills.kicker">04 · Compétences</p>
+          <h2 class="section-title" id="skills-title" data-i18n="skills.title">Les outils que j'utilise</h2>
+          <p class="section-intro" data-i18n="skills.intro">Passez la souris sur un domaine pour le voir dans le schéma.</p>
         </header>
 
         <div class="skills-layout">
@@ -295,13 +311,13 @@
     </section>
 
     <!-- ===================================================================
-         05 — LANGUES & CENTRES D'INTÉRÊT
+         05 · LANGUES & CENTRES D'INTÉRÊT
          =================================================================== -->
     <section class="section" id="languages" aria-labelledby="lang-title">
       <div class="container">
         <header class="section-head reveal">
-          <p class="kicker mono" data-i18n="lang.kicker">05 — Langues &amp; intérêts</p>
-          <h2 class="section-title" id="lang-title" data-i18n="lang.title">Cinq langues, plusieurs terrains.</h2>
+          <p class="kicker mono" data-i18n="lang.kicker">05 · Langues &amp; intérêts</p>
+          <h2 class="section-title" id="lang-title" data-i18n="lang.title">Je parle cinq langues</h2>
         </header>
 
         <div class="lang-layout">
@@ -319,17 +335,17 @@
     </section>
 
     <!-- ===================================================================
-         06 — CONTACT
+         06 · CONTACT
          =================================================================== -->
     <section class="section contact" id="contact" aria-labelledby="contact-title">
       <div class="container">
         <div class="contact-panel card reveal">
           <div class="contact-glow" aria-hidden="true"></div>
-          <p class="kicker mono" data-i18n="contact.kicker">06 — Contact</p>
-          <h2 class="section-title contact-title" id="contact-title"><span class="chrome-text" data-i18n="contact.title">Une alternance à pourvoir ? Parlons-en.</span></h2>
+          <p class="kicker mono" data-i18n="contact.kicker">06 · Contact</p>
+          <h2 class="section-title contact-title" id="contact-title"><span class="chrome-text" data-i18n="contact.title">Vous cherchez un alternant ?</span></h2>
           <p class="contact-lede">
             <span class="status-dot" aria-hidden="true"></span>
-            <span data-i18n="contact.lede">Ouvert aux opportunités d'alternance à Genève · sur site, hybride ou à distance.</span>
+            <span data-i18n="contact.lede">Je cherche une alternance à Genève, sur site, en hybride ou à distance. Écrivez-moi, je réponds rapidement.</span>
           </p>
 
           <div class="email-row">
